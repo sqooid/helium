@@ -22,13 +22,13 @@
 	<div class="">
 		<svelte:component
 			this={icon}
-			class={`h-7 select-none ${
+			class={`h-6 select-none ${
 				selected ? 'fill-primary dark:fill-primary' : 'dark:fill-textOnDark '
 			}`}
 		/>
 	</div>
 	<span
-		class={`font-roboto text-sm select-none ${
+		class={`font-roboto text-xs select-none ${
 			selected ? 'text-primary dark:text-primary' : 'dark:text-white '
 		}`}>{label}</span
 	>

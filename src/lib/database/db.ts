@@ -1,5 +1,5 @@
 import { Dexie, type Table } from 'dexie';
-import type { Account } from './account';
+import { defaultAccount, type Account } from './account';
 
 export class HeliumDexie extends Dexie {
 	account!: Table<Partial<Account>>;
@@ -13,3 +13,12 @@ export class HeliumDexie extends Dexie {
 }
 
 export const db = new HeliumDexie();
+
+const generateDefaultAccount = async () => {
+	if ((await db.account.count()) === 0) {
+		const newAccount = { ...defaultAccount, instanceDomain: '', username: '' };
+		db.account.add(newAccount);
+	}
+};
+
+generateDefaultAccount();

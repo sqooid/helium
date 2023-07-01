@@ -47,11 +47,7 @@
 </svelte:head>
 <div class="h-full w-screen fixed dark:bg-dark0">
 	{#key data.currentPath}
-		<div
-			class="absolute w-full h-full pb-16"
-			in:slide={{ axis: 'x', delay: 250, duration: 200 }}
-			out:slide={{ axis: 'x', duration: 200 }}
-		>
+		<div class="absolute w-full h-full pb-16">
 			<slot />
 		</div>
 	{/key}

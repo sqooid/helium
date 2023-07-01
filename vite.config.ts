@@ -2,7 +2,7 @@ import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vitest/config';
 import { SvelteKitPWA } from '@vite-pwa/sveltekit';
 
-const themeColor = '#2de0a2';
+const themeColor = '#7A86FC';
 
 export default defineConfig({
 	define: {
