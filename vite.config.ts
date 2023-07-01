@@ -2,9 +2,13 @@ import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vitest/config';
 import { SvelteKitPWA } from '@vite-pwa/sveltekit';
 
+const themeColor = '#2de0a2';
+
 export default defineConfig({
 	define: {
-		'process.env.NODE_ENV': process.env.NODE_ENV === 'production' ? '"production"' : '"development"'
+		'process.env.NODE_ENV':
+			process.env.NODE_ENV === 'production' ? '"production"' : '"development"',
+		__THEME__: JSON.stringify(themeColor)
 	},
 	plugins: [
 		sveltekit(),
@@ -28,7 +32,7 @@ export default defineConfig({
 				start_url: '/',
 				scope: '/',
 				id: 'helium',
-				theme_color: '#2de0a2',
+				theme_color: themeColor,
 				icons: [
 					{
 						src: '/icons/helium.svg',

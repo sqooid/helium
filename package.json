@@ -21,10 +21,12 @@
 		"@typescript-eslint/parser": "^5.45.0",
 		"@vite-pwa/sveltekit": "^0.2.5",
 		"autoprefixer": "^10.4.14",
+		"dexie": "^3.2.4",
 		"eslint": "^8.28.0",
 		"eslint-config-prettier": "^8.5.0",
 		"eslint-plugin-svelte": "^2.30.0",
 		"kolorist": "^1.8.0",
+		"lemmy-js-client": "0.18.1-rc.2",
 		"postcss": "^8.4.24",
 		"prettier": "^2.8.0",
 		"prettier-plugin-svelte": "^2.10.1",
@@ -36,8 +38,10 @@
 		"vite": "^4.3.9",
 		"vite-plugin-pwa": "^0.16.4",
 		"vitest": "^0.32.2",
+		"workbox-expiration": "^7.0.0",
 		"workbox-precaching": "^7.0.0",
 		"workbox-routing": "^7.0.0",
+		"workbox-strategies": "^7.0.0",
 		"workbox-window": "^7.0.0"
 	},
 	"type": "module"

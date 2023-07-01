@@ -9,6 +9,8 @@ import {
 	precacheAndRoute
 } from 'workbox-precaching';
 import { NavigationRoute, registerRoute } from 'workbox-routing';
+import { CacheFirst, NetworkFirst } from 'workbox-strategies';
+import { ExpirationPlugin } from 'workbox-expiration';
 
 declare let self: ServiceWorkerGlobalScope;
 
@@ -24,11 +26,29 @@ precacheAndRoute(
 	})
 );
 
-// // clean old assets
+// clean old assets
 cleanupOutdatedCaches();
 
-let allowlist: undefined | RegExp[];
-if (import.meta.env.DEV) allowlist = [/^\/$/];
+// to allow work offline
+if (import.meta.env.PROD) registerRoute(new NavigationRoute(createHandlerBoundToURL('/')));
 
-// // to allow work offline
-registerRoute(new NavigationRoute(createHandlerBoundToURL('/'), { allowlist }));
+// Cache fonts
+registerRoute(/fonts\.(googleapi|gstatic)\.com/, new CacheFirst({ cacheName: 'fonts' }));
+
+// Cache assets temporarily
+registerRoute(
+	(req) => req.request.destination === 'image',
+	new CacheFirst({
+		cacheName: 'images',
+		plugins: [new ExpirationPlugin({ maxEntries: 50, maxAgeSeconds: 3600 })]
+	})
+);
+
+// General API calls
+registerRoute(
+	(req) => req.request.destination === 'object',
+	new NetworkFirst({
+		cacheName: 'api',
+		networkTimeoutSeconds: 10
+	})
+);

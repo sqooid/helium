@@ -1,0 +1,38 @@
+<script lang="ts">
+	import { goto } from '$app/navigation';
+	import { page } from '$app/stores';
+
+	export let href: string;
+	export let label = '';
+	export let icon: any;
+
+	$: selected = $page.url.pathname.indexOf(href) === 0;
+
+	const onClick = () => {
+		goto(href);
+	};
+
+	console.log();
+</script>
+
+<button
+	on:click={onClick}
+	class="flex flex-col items-center justify-between h-full aspect-square py-1.5"
+>
+	<div class="">
+		<svelte:component
+			this={icon}
+			class={`h-7 select-none ${
+				selected ? 'fill-primary dark:fill-primary' : 'dark:fill-textOnDark '
+			}`}
+		/>
+	</div>
+	<span
+		class={`font-roboto text-sm select-none ${
+			selected ? 'text-primary dark:text-primary' : 'dark:text-white '
+		}`}>{label}</span
+	>
+</button>
+
+<style lang="postcss">
+</style>
