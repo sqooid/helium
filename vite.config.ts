@@ -10,14 +10,17 @@ export default defineConfig({
 		sveltekit(),
 		SvelteKitPWA({
 			strategies: 'injectManifest',
-			// registerType: 'prompt',
-			// injectManifest: {},
 			injectRegister: null,
 			devOptions: { enabled: true, type: 'module' },
 			base: '/',
 			srcDir: 'src',
 			filename: 'sw.ts',
-			workbox: { sourcemap: true },
+			workbox: {
+				sourcemap: true,
+				globIgnores: ['**/[!index].html', '**/*'],
+				globPatterns: ['nah'],
+				globDirectory: 'build'
+			},
 			manifest: {
 				short_name: 'Helium',
 				name: 'Helium for Lemmy',
@@ -53,7 +56,7 @@ export default defineConfig({
 						src: '/icons/helium-maskable.svg',
 						type: 'image/svg+xml',
 						sizes: '512x512',
-						purpose: 'maskable'
+						purpose: 'any maskable'
 					}
 				],
 				background_color: '#000',

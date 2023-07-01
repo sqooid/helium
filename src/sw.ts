@@ -3,6 +3,7 @@
 /// <reference no-default-lib="true"/>
 /// <reference lib="esnext" />
 import {
+	PrecacheEntry,
 	cleanupOutdatedCaches,
 	createHandlerBoundToURL,
 	precacheAndRoute
@@ -16,7 +17,12 @@ self.addEventListener('message', (event) => {
 });
 
 // // self.__WB_MANIFEST is default injection point
-precacheAndRoute(self.__WB_MANIFEST);
+precacheAndRoute(
+	self.__WB_MANIFEST.filter((x) => {
+		const entry = x as PrecacheEntry;
+		return entry.url.includes('.') || entry.url === '/';
+	})
+);
 
 // // clean old assets
 cleanupOutdatedCaches();
