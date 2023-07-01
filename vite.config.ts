@@ -3,17 +3,20 @@ import { defineConfig } from 'vitest/config';
 import { SvelteKitPWA } from '@vite-pwa/sveltekit';
 
 export default defineConfig({
+	define: {
+		'process.env.NODE_ENV': process.env.NODE_ENV === 'production' ? '"production"' : '"development"'
+	},
 	plugins: [
 		sveltekit(),
 		SvelteKitPWA({
 			strategies: 'injectManifest',
-			registerType: 'prompt',
-			mode: 'development',
-			injectRegister: 'auto',
+			// registerType: 'prompt',
+			// injectManifest: {},
+			injectRegister: null,
 			devOptions: { enabled: true, type: 'module' },
 			base: '/',
 			srcDir: 'src',
-			filename: 'prompt-sw.ts',
+			filename: 'sw.ts',
 			workbox: { sourcemap: true },
 			manifest: {
 				short_name: 'Helium',
@@ -25,29 +28,29 @@ export default defineConfig({
 				theme_color: '#2de0a2',
 				icons: [
 					{
-						src: '/helium.svg',
+						src: '/icons/helium.svg',
 						type: 'image/svg+xml',
 						sizes: '512x512'
 					},
 					{
-						src: '/helium.png',
+						src: '/icons/helium.png',
 						type: 'image/png',
 						sizes: '512x512'
 					},
 					{
-						src: '/helium-144.svg',
+						src: '/icons/helium-144.svg',
 						type: 'image/svg+xml',
 						sizes: '144x144',
 						purpose: 'any'
 					},
 					{
-						src: '/helium-192.svg',
+						src: '/icons/helium-192.svg',
 						type: 'image/svg+xml',
 						sizes: '192x192',
 						purpose: 'any'
 					},
 					{
-						src: '/helium-maskable.svg',
+						src: '/icons/helium-maskable.svg',
 						type: 'image/svg+xml',
 						sizes: '512x512',
 						purpose: 'maskable'
