@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg width="512" height="512" viewBox="0 0 512 512" version="1.1" id="svg5" inkscape:version="1.2.2 (732a01da63, 2022-12-09)" sodipodi:docname="helium.svg"
+	xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+	xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+	xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns="http://www.w3.org/2000/svg"
+	xmlns:svg="http://www.w3.org/2000/svg">
+	<sodipodi:namedview id="namedview7" pagecolor="#505050" bordercolor="#eeeeee" borderopacity="1" inkscape:showpageshadow="0" inkscape:pageopacity="0" inkscape:pagecheckerboard="0" inkscape:deskcolor="#505050" inkscape:document-units="px" showgrid="false" inkscape:zoom="1.4183568" inkscape:cx="109.63391" inkscape:cy="357.4559" inkscape:window-width="2560" inkscape:window-height="1377" inkscape:window-x="-8" inkscape:window-y="-8" inkscape:window-maximized="1" inkscape:current-layer="layer1" />
+	<defs id="defs2">
+		<linearGradient inkscape:collect="always" id="linearGradient13626">
+			<stop style="stop-color:#00d68b;stop-opacity:1;" offset="0" id="stop13622" />
+			<stop style="stop-color:#00d6b9;stop-opacity:1;" offset="1" id="stop13624" />
+		</linearGradient>
+		<inkscape:path-effect effect="fillet_chamfer" id="path-effect13597" is_visible="true" lpeversion="1" nodesatellites_param="F,0,0,1,0,5,0,1 @ F,0,0,1,0,5,0,1 @ F,0,0,1,0,5,0,1 @ F,0,0,1,0,5,0,1 @ F,0,0,1,0,5,0,1 @ F,0,0,1,0,5,0,1" unit="px" method="auto" mode="F" radius="5" chamfer_steps="1" flexible="false" use_knot_distance="true" apply_no_radius="true" apply_with_radius="true" only_selected="false" hide_knots="false" />
+		<inkscape:path-effect effect="fillet_chamfer" id="path-effect13567" is_visible="true" lpeversion="1" nodesatellites_param="F,0,0,1,0,5,0,1 @ F,0,0,1,0,5,0,1 @ F,0,0,1,0,5,0,1 @ F,0,0,1,0,5,0,1 @ F,0,0,1,0,5,0,1 @ F,0,0,1,0,5,0,1 @ F,0,0,1,0,5,0,1" unit="px" method="auto" mode="F" radius="5" chamfer_steps="1" flexible="false" use_knot_distance="true" apply_no_radius="true" apply_with_radius="true" only_selected="false" hide_knots="false" />
+		<linearGradient inkscape:collect="always" xlink:href="#linearGradient13626" id="linearGradient13628" x1="84.25971" y1="131.84042" x2="292.584" y2="131.84042" gradientUnits="userSpaceOnUse" gradientTransform="matrix(1.7756362,0,0,1.7756362,-78.568665,21.899366)" />
+	</defs>
+	<g inkscape:label="Layer 1" inkscape:groupmode="layer" id="layer1">
+		<path id="path13569" style="fill:url(#linearGradient13628);fill-opacity:1;stroke-width:6.71107" inkscape:transform-center-y="-43.18165" d="m 148.03604,70.682093 65.37339,113.227517 a 8.6601237,8.6601237 89.999823 0 1 3e-5,8.66022 L 69.79356,441.31789 a 2.8867399,2.8867399 60.000098 0 0 2.499985,4.33012 H 361.46399 a 2.8867908,2.8867908 120.00034 0 0 2.50005,-4.33016 L 298.59395,328.09044 a 8.6604402,8.6604402 90.000145 0 1 2e-5,-8.6603 L 442.20645,70.682134 a 2.8867739,2.8867739 59.999806 0 0 -2.50003,-4.330144 l -289.17042,0 a 2.8867193,2.8867193 119.99972 0 0 -2.49996,4.330103 z" inkscape:path-effect="#path-effect13597" inkscape:original-d="M 145.536,66.35199 215.90947,188.23971 67.293545,445.64801 H 366.46399 L 296.094,323.76028 444.70642,66.35199 Z" inkscape:transform-center-x="1.7387069e-05" />
+	</g>
+</svg>
