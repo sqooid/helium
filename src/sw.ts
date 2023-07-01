@@ -3,7 +3,7 @@
 /// <reference no-default-lib="true"/>
 /// <reference lib="esnext" />
 import {
-	PrecacheEntry,
+	type PrecacheEntry,
 	cleanupOutdatedCaches,
 	createHandlerBoundToURL,
 	precacheAndRoute

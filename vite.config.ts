@@ -56,7 +56,7 @@ export default defineConfig({
 						src: '/icons/helium-maskable.svg',
 						type: 'image/svg+xml',
 						sizes: '512x512',
-						purpose: 'any maskable'
+						purpose: 'maskable'
 					}
 				],
 				background_color: '#000',
