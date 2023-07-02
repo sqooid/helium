@@ -7,6 +7,7 @@
 	import { slide } from 'svelte/transition';
 	import BottomBar from '$lib/components/navigation/bottom-bar.svelte';
 	import { currentAccount } from '$lib/stores/theme';
+	import { pickTextColorBasedOnBgColor } from '$lib/helpers/color';
 
 	$: webManifestLink = pwaInfo ? pwaInfo.webManifest.linkTag : '';
 
@@ -15,6 +16,13 @@
 			'--primary',
 			$currentAccount.themeColor ?? __THEME__
 		);
+		const onPrimaryColor = pickTextColorBasedOnBgColor(
+			$currentAccount.themeColor ?? __THEME__,
+			'#ffffff',
+			'#121212'
+		);
+
+		document.documentElement.style.setProperty('--on-primary', onPrimaryColor);
 	}
 
 	if (browser) {
@@ -41,13 +49,14 @@
 	export let data: LayoutData;
 </script>
 
+<!-- svelte-ignore missing-declaration -->
 <svelte:head>
 	{@html webManifestLink}
-	<meta name="theme-color" content="#2de0a2" />
+	<meta name="theme-color" content={__THEME__} />
 </svelte:head>
 <div class="h-full w-screen fixed dark:bg-dark0">
 	{#key data.currentPath}
-		<div class="absolute w-full h-full pb-16">
+		<div class="absolute w-full top-0 bottom-12">
 			<slot />
 		</div>
 	{/key}

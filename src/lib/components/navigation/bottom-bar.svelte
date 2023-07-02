@@ -5,7 +5,7 @@
 	import BottomBarButton from './bottom-bar-button.svelte';
 </script>
 
-<div class="w-full h-13 dark:bg-dark8 absolute bottom-0 flex justify-around shadow-md">
+<div class="w-full h-12 dark:bg-dark8 absolute bottom-0 flex justify-around shadow-md">
 	<BottomBarButton label="Posts" icon={WindowMaximizeIcon} href="/feed" />
 	<BottomBarButton label="Account" icon={UserIcon} href="/account" />
 	<BottomBarButton label="Settings" icon={SettingsIcon} href="/settings" />

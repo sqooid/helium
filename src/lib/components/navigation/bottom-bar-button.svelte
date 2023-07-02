@@ -17,14 +17,12 @@
 
 <button
 	on:click={onClick}
-	class="flex flex-col items-center justify-between h-full aspect-square py-1.5"
+	class="flex flex-col items-center justify-between gap-1 h-full aspect-square py-1.5"
 >
 	<div class="">
 		<svelte:component
 			this={icon}
-			class={`h-6 select-none ${
-				selected ? 'fill-primary dark:fill-primary' : 'dark:fill-textOnDark '
-			}`}
+			class={`h-5 select-none ${selected ? 'fill-primary dark:fill-primary' : 'dark:fill-onDark '}`}
 		/>
 	</div>
 	<span

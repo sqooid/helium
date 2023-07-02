@@ -3,7 +3,7 @@
 </script>
 
 <div class="w-full h-full flex items-center justify-center">
-	<LoadingCircleIcon class="dark:fill-textOnDark stroke-textOnDark w-12" />
+	<LoadingCircleIcon class="dark:fill-onDark stroke-onDark w-12" />
 </div>
 
 <style lang="postcss">
