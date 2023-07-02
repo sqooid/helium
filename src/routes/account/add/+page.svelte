@@ -1,11 +1,12 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { checkDomain } from '$lib/client/account';
+	import { checkDomain, login } from '$lib/client/account';
 	import Button from '$lib/components/input/button.svelte';
 	import EmailInput from '$lib/components/input/email-input.svelte';
 	import PasswordInput from '$lib/components/input/password-input.svelte';
 	import TextInput from '$lib/components/input/text-input.svelte';
 	import TopBackBar from '$lib/components/navigation/top-back-bar.svelte';
+	import { debounce } from 'lodash-es';
 	import * as yup from 'yup';
 
 	const schema = yup.object({
@@ -20,8 +21,14 @@
 
 	const fields: yup.InferType<typeof schema> = schema.getDefault();
 
+	let instanceError: string | null = null;
+	const checkDomainDebounced = debounce(async (d: string) => {
+		const result = await checkDomain(d);
+		if (!result) instanceError = 'Could not connect to instance';
+		else instanceError = null;
+	}, 1000);
 	$: if (fields.instanceDomain) {
-		checkDomain(fields.instanceDomain);
+		checkDomainDebounced(fields.instanceDomain);
 	}
 
 	const onBack = () => {
@@ -29,8 +36,20 @@
 	};
 
 	let loading = false;
-	const onClickLogin = () => {
-		loading = !loading;
+	const onClickLogin = async () => {
+		loading = true;
+		try {
+			const validated = await schema.validate(fields);
+			const jwt = await login(
+				validated.instanceDomain,
+				validated.usernameOrEmail,
+				validated.password
+			);
+			console.log(jwt);
+		} catch (error) {
+			console.log(error);
+		}
+		loading = false;
 	};
 </script>
 
@@ -43,7 +62,7 @@
 			hint="e.g. lemmy.world"
 			canError
 			bind:value={fields.instanceDomain}
-			errorText={fields.instanceDomain}
+			errorText={instanceError}
 		/>
 		<EmailInput
 			label="Username or email"

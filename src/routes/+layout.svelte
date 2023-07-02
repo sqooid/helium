@@ -8,6 +8,8 @@
 	import BottomBar from '$lib/components/navigation/bottom-bar.svelte';
 	import { currentAccount } from '$lib/stores/theme';
 	import { pickTextColorBasedOnBgColor } from '$lib/helpers/color';
+	import { QueryClient, QueryClientProvider } from '@tanstack/svelte-query';
+	import LoadingCircleIcon from '$lib/components/icons/loading-circle-icon.svelte';
 
 	$: webManifestLink = pwaInfo ? pwaInfo.webManifest.linkTag : '';
 
@@ -47,6 +49,8 @@
 	}
 
 	export let data: LayoutData;
+
+	const queryClient = new QueryClient({ defaultOptions: { queries: { enabled: browser } } });
 </script>
 
 <!-- svelte-ignore missing-declaration -->
@@ -54,14 +58,20 @@
 	{@html webManifestLink}
 	<meta name="theme-color" content={__THEME__} />
 </svelte:head>
-<div class="h-full w-screen fixed dark:bg-dark0">
-	{#key data.currentPath}
-		<div class="absolute w-full top-0 bottom-12">
-			<slot />
+{#await currentAccount.init()}
+	<LoadingCircleIcon />
+{:then}
+	<QueryClientProvider client={queryClient}>
+		<div class="h-full w-screen fixed dark:bg-dark0">
+			{#key data.currentPath}
+				<div class="absolute w-full top-0 bottom-12">
+					<slot />
+				</div>
+			{/key}
+			<BottomBar />
 		</div>
-	{/key}
-	<BottomBar />
-</div>
+	</QueryClientProvider>
+{/await}
 
 <style lang="postcss">
 </style>

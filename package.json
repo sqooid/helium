@@ -27,7 +27,6 @@
 		"eslint-config-prettier": "^8.5.0",
 		"eslint-plugin-svelte": "^2.30.0",
 		"kolorist": "^1.8.0",
-		"lemmy-js-client": "0.18.1-rc.2",
 		"postcss": "^8.4.24",
 		"prettier": "^2.8.0",
 		"prettier-plugin-svelte": "^2.10.1",
@@ -48,6 +47,8 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@tanstack/svelte-query": "^4.29.19",
+		"lemmy-js-client": "github:sqooid/lemmy-js-client-helium",
 		"lodash-es": "^4.17.21",
 		"yup": "^1.2.0"
 	}

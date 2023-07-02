@@ -3,19 +3,21 @@ import { defineConfig } from 'vitest/config';
 import { SvelteKitPWA } from '@vite-pwa/sveltekit';
 
 const themeColor = '#7A86FC';
+const hostedDomain = 'helium.thesqooid.com';
 
 export default defineConfig({
 	define: {
 		'process.env.NODE_ENV':
 			process.env.NODE_ENV === 'production' ? '"production"' : '"development"',
-		__THEME__: JSON.stringify(themeColor)
+		__THEME__: JSON.stringify(themeColor),
+		__DOMAIN__: JSON.stringify(hostedDomain)
 	},
 	plugins: [
 		sveltekit(),
 		SvelteKitPWA({
 			strategies: 'injectManifest',
 			injectRegister: null,
-			devOptions: { enabled: true, type: 'module' },
+			devOptions: { enabled: false, type: 'module' },
 			base: '/',
 			srcDir: 'src',
 			filename: 'sw.ts',
