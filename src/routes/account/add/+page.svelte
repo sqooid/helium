@@ -53,6 +53,10 @@
 	};
 </script>
 
+<svelte:head>
+	<title>Add Account</title>
+</svelte:head>
+
 <TopBackBar on:back={onBack} title="Add Account" />
 
 <div class="flex flex-col items-center gap-8">

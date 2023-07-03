@@ -19,6 +19,7 @@
 
 <button
 	bind:this={buttonNode}
+	aria-label={label}
 	disabled={disabled && loading && false}
 	on:click
 	class={`flex gap-2 items-center p-3 ${ghost ? '' : 'bg-primary'} rounded-xl ${

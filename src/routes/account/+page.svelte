@@ -16,6 +16,10 @@
 	};
 </script>
 
+<svelte:head>
+	<title>Accounts</title>
+</svelte:head>
+
 {#if noAccounts}
 	<div class="h-full w-full flex flex-col items-center justify-center gap-4">
 		<Kiwi class="dark:fill-onDark h-12" />
