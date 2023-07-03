@@ -23,6 +23,11 @@ export default {
 		extend: {
 			colors: {
 				error: '#cf6679',
+				onError: '#ffffff',
+				success: '#37bd66',
+				onSuccess: '#ffffff',
+				warning: '#bdaf37',
+				onWarning: '#ffffff',
 				primary: 'var(--primary)',
 				onPrimary: 'var(--on-primary)',
 				onDark: '#ffffff',

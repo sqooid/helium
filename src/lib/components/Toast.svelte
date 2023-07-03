@@ -18,7 +18,7 @@
 	}
 </script>
 
-<div class={`${color} w-full flex justify-center gap-1`} transition:slide={{ axis: 'y' }}>
+<div class={`${color} w-full flex justify-center gap-1p py-1`} transition:slide={{ axis: 'y' }}>
 	{#if toast.title}
 		<span class="font-semibold">{toast.title}:</span>
 	{/if}

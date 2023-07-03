@@ -10,7 +10,7 @@ dependencies:
     version: 4.29.19(svelte@4.0.1)
   lemmy-js-client:
     specifier: github:sqooid/lemmy-js-client-helium
-    version: github.com/sqooid/lemmy-js-client-helium/b79a5f664b632ec483b9ca48e018a9e4b273ef66
+    version: github.com/sqooid/lemmy-js-client-helium/5489a60993d1252ef342b72de846175258c9765e
   lodash-es:
     specifier: ^4.17.21
     version: 4.17.21
@@ -2503,8 +2503,8 @@ packages:
       browserslist: 4.21.9
     dev: true
 
-  /cross-fetch@3.1.7:
-    resolution: {integrity: sha512-Ff9FKeIMm0Rx1o8TEV87bTK5M232akt7uSAYrSTU/QA/W6Jj9P+fWn1mxGgl+dwDzpFoAY35OIS2SJXA8WEWKA==}
+  /cross-fetch@3.1.8:
+    resolution: {integrity: sha512-cvA+JwZoU0Xq+h6WkMvAUqPEYy92Obet6UdKLfW60qn99ftItKjB5T+BkyWOFWe2pUyfQ+IJHmpOTznqk1M6Kg==}
     dependencies:
       node-fetch: 2.6.12
     transitivePeerDependencies:
@@ -5282,14 +5282,14 @@ packages:
       type-fest: 2.19.0
     dev: false
 
-  github.com/sqooid/lemmy-js-client-helium/b79a5f664b632ec483b9ca48e018a9e4b273ef66:
-    resolution: {tarball: https://codeload.github.com/sqooid/lemmy-js-client-helium/tar.gz/b79a5f664b632ec483b9ca48e018a9e4b273ef66}
+  github.com/sqooid/lemmy-js-client-helium/5489a60993d1252ef342b72de846175258c9765e:
+    resolution: {tarball: https://codeload.github.com/sqooid/lemmy-js-client-helium/tar.gz/5489a60993d1252ef342b72de846175258c9765e}
     name: lemmy-js-client
     version: 0.18.1-rc.2
     prepare: true
     requiresBuild: true
     dependencies:
-      cross-fetch: 3.1.7
+      cross-fetch: 3.1.8
       form-data: 4.0.0
     transitivePeerDependencies:
       - encoding

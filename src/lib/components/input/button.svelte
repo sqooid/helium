@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { afterUpdate } from 'svelte';
+	import { afterUpdate, createEventDispatcher } from 'svelte';
 	import LoadingCircleIcon from '../icons/loading-circle-icon.svelte';
 	import { animateLayoutChanges } from '$lib/helpers/animation';
 
@@ -8,6 +8,7 @@
 	export let ghost = false;
 	export let disabled = false;
 	export let loading: boolean | null = null;
+	export let canEnter = false;
 
 	let buttonNode: HTMLButtonElement;
 
@@ -15,13 +16,23 @@
 		if (loading !== null) animateLayoutChanges(node);
 	};
 	$: if (buttonNode) animateButtonLayout(buttonNode);
+
+	const dispatch = createEventDispatcher();
+	const onClick = () => {
+		dispatch('click');
+	};
+	if (canEnter) {
+		document.addEventListener('keypress', (e) => {
+			if (e.key === 'Enter') onClick();
+		});
+	}
 </script>
 
 <button
 	bind:this={buttonNode}
 	aria-label={label}
 	disabled={disabled && loading && false}
-	on:click
+	on:click={onClick}
 	class={`flex gap-2 items-center p-3 ${ghost ? '' : 'bg-primary'} rounded-xl ${
 		disabled ? 'opacity-40' : ''
 	} active:opacity-70 duration-75 transition-all`}

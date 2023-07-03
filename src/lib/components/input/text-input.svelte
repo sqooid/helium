@@ -31,7 +31,7 @@
 			bind:value
 			class={`dark:bg-dark2 px-3 py-2 rounded-md placeholder:text-opacity-10 placeholder:text-white outline-none ${
 				errorText !== null ? 'border border-error' : ''
-			} w-full dark:autofill:bg-dark2`}
+			} w-full`}
 			placeholder={hint}
 		/>
 		{#if loading}
