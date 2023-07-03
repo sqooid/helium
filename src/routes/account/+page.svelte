@@ -4,6 +4,7 @@
 	import Kiwi from '$lib/components/icons/kiwi.svelte';
 	import PlusIcon from '$lib/components/icons/plus-icon.svelte';
 	import Button from '$lib/components/input/button.svelte';
+	import MarkdownEditor from '$lib/components/input/markdown-editor/markdown-editor.svelte';
 	import { db } from '$lib/database/db';
 	import { currentAccount } from '$lib/stores/theme';
 	import { createQuery } from '@tanstack/svelte-query';
@@ -36,11 +37,14 @@
 		<Button ghost label="Add account" icon={PlusIcon} on:click={onClickAddAccount} />
 	</div>
 {:else}
-	<div class="">
-		<div class="">
-			<span class="text-2xl">{$currentAccount.username}</span>
-			<span class="">{$currentAccount.domain}</span>
+	<div class="flex flex-col gap-2 p-6 w-full h-full">
+		<div class="w-full">
+			<div class="">
+				<span class="text-lg">{$currentAccount.username}</span>
+				<span class="text-lg font-light text-opacity-40">@{$currentAccount.domain}</span>
+			</div>
 		</div>
+		<MarkdownEditor />
 	</div>
 {/if}
 
