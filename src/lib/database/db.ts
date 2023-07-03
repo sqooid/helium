@@ -7,7 +7,7 @@ export class HeliumDexie extends Dexie {
 	constructor() {
 		super('HeliumData');
 		this.version(2).stores({
-			account: '[domain+username]'
+			account: '++id, [domain+username]'
 		});
 	}
 }
@@ -16,7 +16,7 @@ export const db = new HeliumDexie();
 
 const generateDefaultAccount = async () => {
 	if ((await db.account.count()) === 0) {
-		const newAccount = { ...defaultAccount, domain: '', username: '' };
+		const newAccount = { ...defaultAccount, username: '' };
 		db.account.add(newAccount);
 	}
 };

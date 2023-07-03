@@ -3,6 +3,7 @@
 	import { checkDomain, login } from '$lib/client/account';
 	import { DBError } from '$lib/client/common';
 	import { HeliumHttpError } from '$lib/client/error';
+	import { getSite } from '$lib/client/site';
 	import Button from '$lib/components/input/button.svelte';
 	import EmailInput from '$lib/components/input/email-input.svelte';
 	import PasswordInput from '$lib/components/input/password-input.svelte';
@@ -10,6 +11,7 @@
 	import TopBackBar from '$lib/components/navigation/top-back-bar.svelte';
 	import { addAccount } from '$lib/database/account';
 	import { defaultFieldErrors } from '$lib/helpers/validation';
+	import { currentAccount } from '$lib/stores/theme';
 	import { toast } from '$lib/stores/toast';
 	import { debounce } from 'lodash-es';
 	import * as yup from 'yup';
@@ -55,12 +57,31 @@
 				validated.password
 			);
 			// Login successful
-			if (!jwt) return;
-			await addAccount({
+			if (!jwt) {
+				toast.show({ type: 'failure', message: 'Failed to get token from server' });
+				return;
+			}
+			// Get more details about user
+			const site = await getSite({ domain: validated.instanceDomain, jwt });
+			const localUser = site.my_user?.local_user_view.local_user;
+			const person = site.my_user?.local_user_view.person;
+			if (!localUser || !person) {
+				toast.show({ type: 'failure', message: 'Failed to get user info' });
+				return;
+			}
+
+			const newAccount = {
 				domain: validated.instanceDomain,
-				username: validated.usernameOrEmail,
+				email: localUser.email ?? '',
+				displayName: person.display_name ?? '',
+				username: person.name,
+				userId: localUser.id,
+				personId: localUser.person_id,
+				pfpUrl: person.avatar ?? '',
 				jwt
-			});
+			};
+			await addAccount(newAccount);
+			currentAccount.setAccount(newAccount.domain, newAccount.username);
 			toast.show({ type: 'success', message: 'Login successful' });
 			goto('/account');
 		} catch (error) {

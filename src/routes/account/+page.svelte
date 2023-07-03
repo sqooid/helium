@@ -1,9 +1,12 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { getSite } from '$lib/client/site';
 	import Kiwi from '$lib/components/icons/kiwi.svelte';
 	import PlusIcon from '$lib/components/icons/plus-icon.svelte';
 	import Button from '$lib/components/input/button.svelte';
 	import { db } from '$lib/database/db';
+	import { currentAccount } from '$lib/stores/theme';
+	import { createQuery } from '@tanstack/svelte-query';
 	import { liveQuery } from 'dexie';
 	const showTip = localStorage.getItem('showAccountTipDone') === null;
 
@@ -14,6 +17,12 @@
 	const onClickAddAccount = () => {
 		goto('/account/add');
 	};
+
+	$: siteQuery = createQuery({
+		queryKey: [$currentAccount.domain, $currentAccount.displayName],
+		queryFn: () => getSite($currentAccount),
+		enabled: !!$currentAccount.domain
+	});
 </script>
 
 <svelte:head>
@@ -26,16 +35,18 @@
 		<span class="font-thin">Register an account to get started</span>
 		<Button ghost label="Add account" icon={PlusIcon} on:click={onClickAddAccount} />
 	</div>
+{:else}
+	<div class="">
+		<div class="">
+			<span class="text-2xl">{$currentAccount.username}</span>
+			<span class="">{$currentAccount.domain}</span>
+		</div>
+	</div>
 {/if}
 
 {#if showTip}
-	<div class="absolute bottom-0 w-full dark:bg-dark6 text-center h-fit py-2">
-		<span
-			class="text-sm font-thin
-					"
-		>
-			Tip: Hold the Account button to quickly switch between accounts
-		</span>
+	<div class="absolute bottom-0 w-full dark:bg-dark6 text-center h-fit py-1">
+		<span class="text-sm font-thin"> Tip: Hold the Account button to switch between accounts </span>
 	</div>
 {/if}
 
