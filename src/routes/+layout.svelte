@@ -1,15 +1,15 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
+	import LoadingCircleIcon from '$lib/components/icons/loading-circle-icon.svelte';
+	import BottomBar from '$lib/components/navigation/bottom-bar.svelte';
+	import { pickTextColorBasedOnBgColor } from '$lib/helpers/color';
+	import { currentAccount } from '$lib/stores/theme';
+	import { QueryClient, QueryClientProvider } from '@tanstack/svelte-query';
 	import { pwaInfo } from 'virtual:pwa-info';
 	import { useRegisterSW } from 'virtual:pwa-register/svelte';
 	import '../app.css';
 	import type { LayoutData } from './$types';
-	import { slide } from 'svelte/transition';
-	import BottomBar from '$lib/components/navigation/bottom-bar.svelte';
-	import { currentAccount } from '$lib/stores/theme';
-	import { pickTextColorBasedOnBgColor } from '$lib/helpers/color';
-	import { QueryClient, QueryClientProvider } from '@tanstack/svelte-query';
-	import LoadingCircleIcon from '$lib/components/icons/loading-circle-icon.svelte';
+	import ToastBar from '$lib/components/ToastBar.svelte';
 
 	$: webManifestLink = pwaInfo ? pwaInfo.webManifest.linkTag : '';
 
@@ -58,20 +58,21 @@
 	{@html webManifestLink}
 	<meta name="theme-color" content={__THEME__} />
 </svelte:head>
-{#await currentAccount.init()}
-	<LoadingCircleIcon />
-{:then}
-	<QueryClientProvider client={queryClient}>
-		<div class="h-full w-screen fixed dark:bg-dark0">
-			{#key data.currentPath}
-				<div class="absolute w-full top-0 bottom-12">
+<QueryClientProvider client={queryClient}>
+	<div class="h-full w-screen fixed dark:bg-dark0">
+		{#key data.currentPath}
+			<div class="absolute w-full top-0 bottom-12">
+				{#await currentAccount.init()}
+					<LoadingCircleIcon />
+				{:then}
 					<slot />
-				</div>
-			{/key}
-			<BottomBar />
-		</div>
-	</QueryClientProvider>
-{/await}
+				{/await}
+			</div>
+		{/key}
+		<ToastBar class="bottom-12" />
+		<BottomBar />
+	</div>
+</QueryClientProvider>
 
 <style lang="postcss">
 </style>
