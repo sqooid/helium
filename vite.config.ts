@@ -3,7 +3,7 @@ import { defineConfig } from 'vitest/config';
 import { SvelteKitPWA } from '@vite-pwa/sveltekit';
 
 const themeColor = '#7A86FC';
-const hostedDomain = 'helium.thesqooid.com';
+const hostedDomain = 'heliumapi.thesqooid.com';
 
 export default defineConfig({
 	define: {

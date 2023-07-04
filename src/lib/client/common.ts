@@ -1,7 +1,13 @@
 import { LemmyHttp, LemmyHttpError } from 'lemmy-js-client';
 import { HeliumHttpError } from './error';
 
-export const makeClient = (domain: string) => new LemmyHttp(`https://${__DOMAIN__}/api/${domain}`);
+export const makeClient = (domain: string) => {
+	domain = domain.toLowerCase();
+	if (domain === 'lm.thesqooid.com') {
+		return new LemmyHttp(`https://${domain}`);
+	}
+	return new LemmyHttp(`https://${__DOMAIN__}/${domain}`);
+};
 
 export class DBError extends Error {
 	constructor(message: string) {

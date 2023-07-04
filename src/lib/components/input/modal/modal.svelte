@@ -4,7 +4,7 @@
 	export let show = false;
 	let modalContent: HTMLDivElement;
 	const onClickDocument = (e: MouseEvent) => {
-		if (!nodeInEvent(modalContent, e)) {
+		if (show && !nodeInEvent(modalContent, e)) {
 			show = false;
 		}
 	};

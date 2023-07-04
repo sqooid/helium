@@ -14,13 +14,27 @@
 	import CodeIcon from '$lib/components/icons/code-icon.svelte';
 	import TerminalIcon from '$lib/components/icons/terminal-icon.svelte';
 	import ImageIcon from '$lib/components/icons/image-icon.svelte';
+	import { getFileInput } from '$lib/helpers/dom';
+	import { uploadImage } from '$lib/client/content';
 	export let editor: Editor | null;
 
 	const toggleBold = () => editor?.action(callCommand(toggleStrongCommand.key));
 	const toggleItalic = () => editor?.action(callCommand(toggleEmphasisCommand.key));
 	const toggleInlineCode = () => editor?.action(callCommand(toggleInlineCodeCommand.key));
 	const createCodeBlock = () => editor?.action(callCommand(createCodeBlockCommand.key));
-	const insertImages = () => {};
+	const insertImages = () => {
+		getFileInput(
+			(files) => {
+				console.log(files);
+
+				if (!files) return;
+				for (const file of files) {
+					uploadImage(file);
+				}
+			},
+			{ fileTypes: ['.png', '.jpg', '.jpeg', '.webp'] }
+		);
+	};
 	const insertImage = () => editor?.action(callCommand(insertImageCommand.key));
 </script>
 
