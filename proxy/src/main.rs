@@ -1,5 +1,5 @@
 use chrono;
-use hyper::body::{self, to_bytes, HttpBody};
+use hyper::body::{to_bytes, HttpBody};
 use hyper::http::{response, HeaderValue};
 use hyper::service::{make_service_fn, service_fn};
 use hyper::{Body, Client, HeaderMap, Request, Response, Server, StatusCode, Uri};
@@ -56,7 +56,7 @@ async fn hello_world(mut req: Request<Body>) -> Result<Response<Body>, Infallibl
         }
     };
 
-    let destination_url = Uri::builder()
+    let _destination_url = Uri::builder()
         .scheme("https")
         .authority(parts.0)
         .path_and_query(parts.1)
@@ -74,7 +74,7 @@ async fn hello_world(mut req: Request<Body>) -> Result<Response<Body>, Infallibl
     if request_content_length < MAX_ALLOWED_BODY_SIZE {
         body_bytes = match to_bytes(req.into_body()).await {
             Ok(b) => b,
-            Err(e) => {
+            Err(_e) => {
                 println!("Failed to read body");
                 return Ok(default_response_builder(StatusCode::BAD_REQUEST)
                     .body(Body::empty())
