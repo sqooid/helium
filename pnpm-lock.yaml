@@ -37,7 +37,7 @@ dependencies:
     version: 0.13.0
   lemmy-js-client:
     specifier: github:sqooid/lemmy-js-client-helium
-    version: github.com/sqooid/lemmy-js-client-helium/571f8708ba6d65767bf32e00a1b29efeef3f8f6f
+    version: github.com/sqooid/lemmy-js-client-helium/9016311f0819c7b620b4ef19673bc02c7e91b159
   lodash-es:
     specifier: ^4.17.21
     version: 4.17.21
@@ -6091,8 +6091,8 @@ packages:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
     dev: false
 
-  github.com/sqooid/lemmy-js-client-helium/571f8708ba6d65767bf32e00a1b29efeef3f8f6f:
-    resolution: {tarball: https://codeload.github.com/sqooid/lemmy-js-client-helium/tar.gz/571f8708ba6d65767bf32e00a1b29efeef3f8f6f}
+  github.com/sqooid/lemmy-js-client-helium/9016311f0819c7b620b4ef19673bc02c7e91b159:
+    resolution: {tarball: https://codeload.github.com/sqooid/lemmy-js-client-helium/tar.gz/9016311f0819c7b620b4ef19673bc02c7e91b159}
     name: lemmy-js-client
     version: 0.18.1-rc.2
     prepare: true
