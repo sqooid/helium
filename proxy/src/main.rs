@@ -1,4 +1,3 @@
-use chrono;
 use hyper::body::{to_bytes, HttpBody};
 use hyper::http::{response, HeaderValue};
 use hyper::service::{make_service_fn, service_fn};
@@ -10,7 +9,7 @@ use std::{env, time};
 
 const MAX_ALLOWED_BODY_SIZE: u64 = 1024 * 1024 * 256;
 
-fn log(content: &str) -> () {
+fn log(content: &str) {
     let timestamp = chrono::offset::Local::now();
     println!(
         "[{}] {}",
@@ -30,7 +29,7 @@ async fn hello_world(mut req: Request<Body>) -> Result<Response<Body>, Infallibl
     let path = req
         .uri()
         .path_and_query()
-        .and_then(|x| Some(x.as_str()))
+        .map(|x| x.as_str())
         .unwrap_or("/");
     let mut path_iter = path.chars();
     path_iter.next();
@@ -47,7 +46,7 @@ async fn hello_world(mut req: Request<Body>) -> Result<Response<Body>, Infallibl
     response_headers.insert("Access-Control-Allow-Origin", HeaderValue::from_static("*"));
 
     // Guaranteed bad url
-    let parts = match path_clean.split_once("/") {
+    let parts = match path_clean.split_once('/') {
         Some(x) => x,
         None => {
             return Ok(default_response_builder(StatusCode::BAD_REQUEST)
@@ -92,7 +91,7 @@ async fn hello_world(mut req: Request<Body>) -> Result<Response<Body>, Infallibl
         .uri(format!("https://{}", &path_clean));
     builder.headers_mut().and_then(|x| {
         if let Some(jwt) = cookie {
-            x.append("Cookie", jwt.clone());
+            x.append("Cookie", jwt);
         }
         x.remove("Origin")
     });
