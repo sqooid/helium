@@ -1,9 +1,9 @@
 mod error;
 use error::ServerError;
-use hyper::body::{to_bytes, HttpBody};
-use hyper::http::{response, HeaderValue};
+use hyper::body::{HttpBody};
+use hyper::http::{response};
 use hyper::service::{make_service_fn, service_fn};
-use hyper::{Body, Client, HeaderMap, Request, Response, Server, StatusCode, Uri};
+use hyper::{Body, Client, Request, Response, Server, StatusCode, Uri};
 use hyper_tls::HttpsConnector;
 use std::convert::Infallible;
 use std::net::SocketAddr;
