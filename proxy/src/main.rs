@@ -1,3 +1,5 @@
+mod error;
+use error::ServerError;
 use hyper::body::{to_bytes, HttpBody};
 use hyper::http::{response, HeaderValue};
 use hyper::service::{make_service_fn, service_fn};
@@ -5,9 +7,8 @@ use hyper::{Body, Client, HeaderMap, Request, Response, Server, StatusCode, Uri}
 use hyper_tls::HttpsConnector;
 use std::convert::Infallible;
 use std::net::SocketAddr;
+use std::str::FromStr;
 use std::{env, time};
-
-const MAX_ALLOWED_BODY_SIZE: u64 = 1024 * 1024 * 256;
 
 fn log(content: &str) {
     let timestamp = chrono::offset::Local::now();
@@ -24,78 +25,70 @@ fn default_response_builder(status: StatusCode) -> response::Builder {
         .header("Access-Control-Allow-Origin", "*")
 }
 
-async fn hello_world(mut req: Request<Body>) -> Result<Response<Body>, Infallible> {
-    let method = req.method().clone();
+async fn handler_wrapper(req: Request<Body>) -> Result<Response<Body>, Infallible> {
+    match proxy_handler(req).await {
+        Ok(r) => Ok(r),
+        Err(e) => Ok(match e {
+            ServerError::BadPath(s) => default_response_builder(StatusCode::BAD_REQUEST)
+                .body(Body::from(s))
+                .unwrap(),
+            ServerError::ContentSize => default_response_builder(StatusCode::BAD_REQUEST)
+                .body(Body::from(e.to_string()))
+                .unwrap(),
+            ServerError::RequestError(e) => {
+                default_response_builder(StatusCode::INTERNAL_SERVER_ERROR)
+                    .body(Body::from(e.message().to_string()))
+                    .unwrap()
+            }
+        }),
+    }
+}
+
+async fn proxy_handler(req: Request<Body>) -> Result<Response<Body>, ServerError> {
     let path = req
         .uri()
         .path_and_query()
         .map(|x| x.as_str())
-        .unwrap_or("/");
+        .ok_or_else(|| ServerError::BadPath("path could not be parsed".to_string()))?;
     let mut path_iter = path.chars();
     path_iter.next();
     let path_clean = path_iter.as_str().to_owned();
 
+    let (mut parts, body) = req.into_parts();
+
     // Remove origin for CORS
-    let headers = req.headers_mut();
+    let mut headers = parts.headers;
     headers.remove("Origin");
-
-    //  Set cookie for image uploads
-    let cookie = headers.get("X-Token").cloned();
-
-    let mut response_headers = HeaderMap::new();
-    response_headers.insert("Access-Control-Allow-Origin", HeaderValue::from_static("*"));
-
-    // Guaranteed bad url
-    let parts = match path_clean.split_once('/') {
-        Some(x) => x,
-        None => {
-            return Ok(default_response_builder(StatusCode::BAD_REQUEST)
-                .body(Body::empty())
-                .unwrap());
-        }
+    if let Some(jwt_cookie) = headers.get("X-Token") {
+        //  Set cookie for image uploads
+        headers.append("Cookie", jwt_cookie.clone());
     };
+    parts.headers = headers;
 
-    let _destination_url = Uri::builder()
-        .scheme("https")
-        .authority(parts.0)
-        .path_and_query(parts.1)
-        .build()
-        .unwrap();
+    // Can perform own path checks
+    // let (domain, path) = path_clean
+    //     .split_once('/')
+    //     .ok_or_else(|| ServerError::BadPath("Path is invalid".to_string()))?;
 
     let https = HttpsConnector::new();
     let client = Client::builder().build(https);
 
-    let request_content_length = match req.body().size_hint().upper() {
-        Some(v) => v,
-        None => MAX_ALLOWED_BODY_SIZE + 1,
-    };
-    let body_bytes;
-    if request_content_length < MAX_ALLOWED_BODY_SIZE {
-        body_bytes = match to_bytes(req.into_body()).await {
-            Ok(b) => b,
-            Err(_e) => {
-                println!("Failed to read body");
-                return Ok(default_response_builder(StatusCode::BAD_REQUEST)
-                    .body(Body::empty())
-                    .unwrap());
-            }
-        };
-    } else {
-        return Ok(default_response_builder(StatusCode::BAD_REQUEST)
-            .body(Body::empty())
-            .unwrap());
+    // Can impose maximum body limit
+    let max_body_size = env::var("MAX_BODY_SIZE")
+        .map(|v| v.parse().expect("invalid MAX_BODY_SIZE provided"))
+        .unwrap_or(0);
+    if max_body_size > 0 {
+        body.size_hint()
+            .upper()
+            .filter(|s| s <= &max_body_size)
+            .ok_or_else(|| ServerError::ContentSize)?;
     }
 
-    let mut builder = Request::builder()
-        .method(method)
-        .uri(format!("https://{}", &path_clean));
-    builder.headers_mut().and_then(|x| {
-        if let Some(jwt) = cookie {
-            x.append("Cookie", jwt);
-        }
-        x.remove("Origin")
-    });
-    let proxy_request = builder.body(Body::from(body_bytes)).unwrap();
+    parts.uri = Uri::from_str(&format!("https://{}", &path_clean))
+        .map_err(|_| ServerError::BadPath("destination URI is invalid".to_string()))?;
+
+    let proxy_request = Request::from_parts(parts, body);
+
     let start_time = time::Instant::now();
     log(&format!(
         "{} request to {}",
@@ -106,37 +99,23 @@ async fn hello_world(mut req: Request<Body>) -> Result<Response<Body>, Infallibl
     let proxy_response = client.request(proxy_request).await;
     log(&format!("took {}ms", start_time.elapsed().as_millis(),));
 
-    match proxy_response {
-        Ok(mut r) => {
-            let _headers = r.headers_mut();
-            Ok(r)
-        }
-        Err(_) => Ok(default_response_builder(StatusCode::INTERNAL_SERVER_ERROR)
-            .body(Body::empty())
-            .unwrap()),
-    }
+    proxy_response.map_err(|e| ServerError::RequestError(e))
 }
 
 #[tokio::main]
 async fn main() {
-    let addr = SocketAddr::from((
-        [0, 0, 0, 0],
-        match env::var("PORT") {
-            Ok(port) => port.parse().expect("Invalid port"),
-            Err(_) => 3000,
-        },
-    ));
+    let port = match env::var("PORT") {
+        Ok(port) => port.parse().expect("Invalid port"),
+        Err(_) => 3000,
+    };
+    let addr = SocketAddr::from(([0, 0, 0, 0], port));
 
-    // A `Service` is needed for every connection, so this
-    // creates one from our `hello_world` function.
-    let make_svc = make_service_fn(|_conn| async {
-        // service_fn converts our function into a `Service`
-        Ok::<_, Infallible>(service_fn(hello_world))
-    });
+    let make_svc =
+        make_service_fn(|_conn| async { Ok::<_, Infallible>(service_fn(handler_wrapper)) });
 
     let server = Server::bind(&addr).serve(make_svc);
+    log(&format!("Listening on port {}", port));
 
-    // Run this server for... forever!
     if let Err(e) = server.await {
         eprintln!("server error: {}", e);
     }
