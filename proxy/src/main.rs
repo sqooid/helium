@@ -1,7 +1,7 @@
 mod error;
 use error::ServerError;
-use hyper::body::{HttpBody};
-use hyper::http::{response};
+use hyper::body::HttpBody;
+use hyper::http::response;
 use hyper::service::{make_service_fn, service_fn};
 use hyper::{Body, Client, Request, Response, Server, StatusCode, Uri};
 use hyper_tls::HttpsConnector;
@@ -99,7 +99,7 @@ async fn proxy_handler(req: Request<Body>) -> Result<Response<Body>, ServerError
     let proxy_response = client.request(proxy_request).await;
     log(&format!("took {}ms", start_time.elapsed().as_millis(),));
 
-    proxy_response.map_err(|e| ServerError::RequestError(e))
+    proxy_response.map_err(ServerError::RequestError)
 }
 
 #[tokio::main]
