@@ -116,10 +116,17 @@ homo
 	};
 </script>
 
-<div class="w-full h-full flex flex-col">
+<div class="w-full h-full flex flex-col relative">
 	<!-- svelte-ignore a11y-no-static-element-interactions -->
-	<div use:editor class="flex-grow overflow-auto" on:click={onClickDoc} on:keydown={onKeyDownDoc} />
-	<MarkdownEditorToolbar class="justify-self-end" editor={editorRef} />
+	<div
+		use:editor
+		class="flex-grow overflow-auto pb-64"
+		on:click={onClickDoc}
+		on:keydown={onKeyDownDoc}
+	/>
+	<div class="absolute bottom-8 flex items-center justify-center w-full">
+		<MarkdownEditorToolbar editor={editorRef} />
+	</div>
 </div>
 
 <style lang="postcss">
