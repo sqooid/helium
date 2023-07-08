@@ -18,18 +18,16 @@ export const blockSpoilerNode = $node('spoiler', () => ({
 	toDOM: (node) => ['details', { ...node.attrs, open: true, class: 'bg-gray-900' }, 0],
 	parseMarkdown: {
 		match: (node) => {
-			console.log('parseBlock', node);
-			return node.type === 'spoiler';
+			return node.type === 'spacedDirective' && node.name === 'spoiler';
 		},
 		runner: (state, node, proseType) => {
-			console.log(node.children);
 			state.openNode(proseType).next(node.children).closeNode();
 		}
 	},
 	toMarkdown: {
 		match: (node) => node.type.name === 'spoiler',
 		runner: (state, node) => {
-			state.openNode('spoiler').next(node.content).closeNode();
+			state.openNode('spacedDirective', 'spoiler').next(node.content).closeNode();
 		}
 	}
 }));
@@ -62,11 +60,9 @@ export const blockSpoilerTitleNode = $node('spoilerTitle', () => ({
 	toDOM: (node) => ['summary', { class: 'text-white dark:bg-gray-800', ...node.attrs }, 0],
 	parseMarkdown: {
 		match: (node) => {
-			console.log('parseTitle', node);
-			return node.type === 'spoilerTitle';
+			return node.type === 'spacedDirectiveLabel';
 		},
 		runner: (state, node, proseType) => {
-			console.log(proseType);
 			state.openNode(proseType).next(node.children).closeNode();
 			// state.addNode(proseType);
 		}
@@ -75,7 +71,7 @@ export const blockSpoilerTitleNode = $node('spoilerTitle', () => ({
 		match: (node) => node.type.name === 'spoilerTitle',
 		runner: (state, node) => {
 			// state.addNode('textDirective', undefined, undefined, { name: 'spoiler_title' });
-			state.openNode('spoilerTitle').next(node.content).closeNode();
+			state.openNode('spacedDirectiveLabel').next(node.content).closeNode();
 		}
 	}
 }));

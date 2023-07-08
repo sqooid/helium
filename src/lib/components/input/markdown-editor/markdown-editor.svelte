@@ -5,7 +5,10 @@
 		defaultValueCtx,
 		commandsCtx,
 		remarkPluginsCtx,
-		nodesCtx
+		nodesCtx,
+		editorViewCtx,
+		serializerCtx,
+		remarkStringifyOptionsCtx
 	} from '@milkdown/core';
 	import { nord } from '@milkdown/theme-nord';
 	import { trailing } from '@milkdown/plugin-trailing';
@@ -20,8 +23,41 @@
 		remarkSpacedDirective,
 		spanNode
 	} from './custom-plugin';
+	import { spacedDirectiveHandlers } from './spaced-directives';
 
-	export let value = '_stuff_ stuff\n:::spoiler title _title_\ncontent\n>quote\n\n:::\nbehind';
+	export let value = `
+
+some _words_
+::: spoiler don't look
+secret stuff
+eat shit
+>blyat
+
+dfd
+:::
+some more words
+::: spoiler more spoilers
+![](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbx13bqhb15FizG1wUVP4R9yj8GxyunNH90WbxaHniKA&s)
+booooo
+>blyat
+:::spoiler BOO
+haha
+:::
+
+nigs
+:::
+after
+>quote
+
+::: spoiler another one
+\`code\`
+:::
+
+\`\`\`jk
+homo
+\`\`\`
+
+	`;
 
 	let editorRef: Editor | null = null;
 	const editor = (dom: HTMLElement) => {
@@ -53,7 +89,20 @@
 		MakeEditor.then((editor) => {
 			editorRef = editor;
 			const nodes = editor.ctx.get(nodesCtx);
-			console.log('nodes', nodes);
+			editor.ctx.update(editorViewCtx, (v) => {
+				v.editable = false;
+				return v;
+			});
+			editor.ctx.update(remarkStringifyOptionsCtx, (o) => {
+				Object.assign(o.handlers as any, spacedDirectiveHandlers);
+				return o;
+			});
+			editor.action((ctx) => {
+				const editorView = ctx.get(editorViewCtx);
+				const serializer = ctx.get(serializerCtx);
+				const md = serializer(editorView.state.doc);
+				console.log(md);
+			});
 		});
 	};
 
@@ -69,11 +118,7 @@
 
 <div class="w-full h-full flex flex-col">
 	<!-- svelte-ignore a11y-no-static-element-interactions -->
-	<div use:editor class="flex-grow" on:click={onClickDoc} on:keydown={onKeyDownDoc} />
-	<details>
-		<summary>fum</summary>
-		fuck
-	</details>
+	<div use:editor class="flex-grow overflow-auto" on:click={onClickDoc} on:keydown={onKeyDownDoc} />
 	<MarkdownEditorToolbar class="justify-self-end" editor={editorRef} />
 </div>
 
