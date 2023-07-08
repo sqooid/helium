@@ -12,7 +12,8 @@ export const uploadImage = async (file: File) => {
 		console.dir(result);
 
 		return {
-			url: result.url
+			url: result.url,
+			deleteUrl: result.delete_url
 		};
 	});
 };

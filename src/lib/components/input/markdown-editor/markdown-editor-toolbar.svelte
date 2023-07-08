@@ -22,28 +22,28 @@
 	const toggleItalic = () => editor?.action(callCommand(toggleEmphasisCommand.key));
 	const toggleInlineCode = () => editor?.action(callCommand(toggleInlineCodeCommand.key));
 	const createCodeBlock = () => editor?.action(callCommand(createCodeBlockCommand.key));
-	const insertImages = () => {
+	const uploadImages = () => {
 		getFileInput(
-			(files) => {
-				console.log(files);
-
+			async (files) => {
 				if (!files) return;
 				for (const file of files) {
-					uploadImage(file);
+					const { url, deleteUrl } = await uploadImage(file);
+					if (url) insertImage({ src: url });
 				}
 			},
 			{ fileTypes: ['.png', '.jpg', '.jpeg', '.webp'] }
 		);
 	};
-	const insertImage = () => editor?.action(callCommand(insertImageCommand.key));
+	const insertImage = (payload: { src: string; alt?: string; title?: string }) =>
+		editor?.action(callCommand(insertImageCommand.key, payload));
 </script>
 
-<div class={`${$$props.class} dark:bg-dark4 flex shadow-md`}>
+<div class={`${$$props.class} dark:bg-dark4 flex shadow-md rounded-md overflow-hidden`}>
 	<MarkdownEditorToolbarButton icon={BoldIcon} active on:mousedown={toggleBold} />
 	<MarkdownEditorToolbarButton icon={ItalicIcon} on:mousedown={toggleItalic} />
 	<MarkdownEditorToolbarButton icon={TerminalIcon} on:mousedown={toggleInlineCode} />
 	<MarkdownEditorToolbarButton icon={CodeIcon} on:mousedown={createCodeBlock} />
-	<MarkdownEditorToolbarButton icon={ImageIcon} on:mousedown={insertImages} />
+	<MarkdownEditorToolbarButton icon={ImageIcon} on:mousedown={uploadImages} />
 </div>
 
 <style lang="postcss">
