@@ -1,5 +1,4 @@
 import type { RemarkPlugin } from '@milkdown/transformer';
-import { after } from 'lodash-es';
 import type { Paragraph, Parent, Root } from 'mdast';
 import type { Handle } from 'mdast-util-to-markdown';
 
@@ -111,7 +110,7 @@ const transformContent = (parent: Parent) => {
 	}
 };
 
-export const spacedDirective: RemarkPlugin = () => (tree, file) => {
+export const spacedDirective: RemarkPlugin = () => (tree) => {
 	// console.log(tree, file);
 	transformContent(tree as Root);
 	return;

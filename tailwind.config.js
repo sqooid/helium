@@ -16,6 +16,10 @@ const darkElevations = [...Array(40).keys()].reduce((acc, elev) => {
 	acc[`dark${elev}`] = `rgb(${Math.floor(r * 255)},${Math.floor(g * 255)},${Math.floor(b * 255)})`;
 	return acc;
 }, {});
+const darkTransElevations = [...Array(40).keys()].reduce((acc, x) => {
+	acc[`darkElev${x}`] = `rgba(255,255,255,${x / 80})`;
+	return acc;
+}, {});
 
 export default {
 	content: ['./src/**/*.{html,js,ts,svelte}'],
@@ -32,7 +36,8 @@ export default {
 				onPrimary: 'var(--on-primary)',
 				onDark: '#ffffff',
 				OnLight: 'rgba(255,255,255,222)',
-				...darkElevations
+				...darkElevations,
+				...darkTransElevations
 			},
 			fontFamily: {
 				roboto: ['Roboto', ...defaultTheme.fontFamily.sans]

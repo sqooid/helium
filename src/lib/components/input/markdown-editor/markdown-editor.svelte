@@ -12,7 +12,14 @@
 	} from '@milkdown/core';
 	import { nord } from '@milkdown/theme-nord';
 	import { trailing } from '@milkdown/plugin-trailing';
-	import { commonmark, headingAttr, blockquoteAttr } from '@milkdown/preset-commonmark';
+	import {
+		commonmark,
+		headingAttr,
+		blockquoteAttr,
+		imageAttr,
+		inlineCodeAttr,
+		codeBlockAttr
+	} from '@milkdown/preset-commonmark';
 	import MarkdownEditorToolbar from './markdown-editor-toolbar.svelte';
 	import Modal from '../modal/modal.svelte';
 	import {
@@ -75,8 +82,23 @@ homo
 				});
 				ctx.set(blockquoteAttr.key as any, (node: any) => {
 					return {
-						class:
-							'p-4 dark:bg-white dark:bg-opacity-10 dark:border-l-4 dark:border-white shadow-md rounded-md'
+						class: 'p-4 dark:bg-darkElev4 dark:border-l-4 dark:border-white shadow-md rounded-md'
+					};
+				});
+				ctx.set(imageAttr.key as any, (node: any) => {
+					return { class: 'w-full' };
+				});
+				ctx.set(inlineCodeAttr.key as any, (node: any) => {
+					return {
+						class: 'dark:bg-darkElev4 p-1 rounded'
+					};
+				});
+				ctx.set(codeBlockAttr.key as any, (node: any) => {
+					return {
+						pre: {
+							class: 'dark:bg-darkElev4 p-2 rounded w-full'
+						},
+						code: {}
 					};
 				});
 			})
@@ -116,11 +138,11 @@ homo
 	};
 </script>
 
-<div class="w-full h-full flex flex-col relative">
+<div class="w-full h-full flex flex-col relative items-center">
 	<!-- svelte-ignore a11y-no-static-element-interactions -->
 	<div
 		use:editor
-		class="flex-grow overflow-auto pb-64"
+		class="flex-grow w-full overflow-auto pb-64 max-w-prose"
 		on:click={onClickDoc}
 		on:keydown={onKeyDownDoc}
 	/>
@@ -130,4 +152,7 @@ homo
 </div>
 
 <style lang="postcss">
+	:global(.editor) {
+		@apply flex flex-col gap-2;
+	}
 </style>
