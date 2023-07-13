@@ -8,7 +8,8 @@
 		nodesCtx,
 		editorViewCtx,
 		serializerCtx,
-		remarkStringifyOptionsCtx
+		remarkStringifyOptionsCtx,
+		schemaCtx
 	} from '@milkdown/core';
 	import { nord } from '@milkdown/theme-nord';
 	import { trailing } from '@milkdown/plugin-trailing';
@@ -29,8 +30,14 @@
 		remarkDirective,
 		remarkSpacedDirective,
 		spanNode
-	} from './custom-plugin';
+	} from './spoiler-plugin';
 	import { spacedDirectiveHandlers } from './spaced-directives';
+	import { editorStyle } from './style-plugin';
+	import { eventListen } from './event-plugin';
+	import { synaxHighlight } from './syntax-plugin';
+	import { prism } from '@milkdown/plugin-prism';
+	import './syntax.css';
+	import { demoteHeadingCommand, toggleCodeCommand } from './commands';
 
 	export let value = `
 
@@ -60,8 +67,8 @@ after
 \`code\`
 :::
 
-\`\`\`jk
-homo
+\`\`\`ts
+const gay = "homo"
 \`\`\`
 
 	`;
@@ -72,45 +79,24 @@ homo
 			.config((ctx) => {
 				ctx.set(rootCtx, dom);
 				ctx.set(defaultValueCtx, value);
-				ctx.set(headingAttr.key as any, (node: any) => {
-					const level = node.attrs.level;
-					if (level === 1) return { class: 'text-4xl', 'data-el-type': 'h1' };
-					if (level === 2) return { class: 'text-3xl', 'data-el-type': 'h2' };
-					if (level === 3) return { class: 'text-2xl', 'data-el-type': 'h3' };
-					if (level === 4) return { class: 'text-xl', 'data-el-type': 'h4' };
-					if (level === 5) return { class: 'text-lg', 'data-el-type': 'h5' };
-				});
-				ctx.set(blockquoteAttr.key as any, (node: any) => {
-					return {
-						class: 'p-4 dark:bg-darkElev4 dark:border-l-4 dark:border-white shadow-md rounded-md'
-					};
-				});
-				ctx.set(imageAttr.key as any, (node: any) => {
-					return { class: 'w-full' };
-				});
-				ctx.set(inlineCodeAttr.key as any, (node: any) => {
-					return {
-						class: 'dark:bg-darkElev4 p-1 rounded'
-					};
-				});
-				ctx.set(codeBlockAttr.key as any, (node: any) => {
-					return {
-						pre: {
-							class: 'dark:bg-darkElev4 p-2 rounded w-full'
-						},
-						code: {}
-					};
-				});
 			})
 			.config(nord)
+			.config(editorStyle)
+			.config(synaxHighlight)
+			.use(prism)
 			.use(commonmark)
 			.use(trailing)
+			.use([demoteHeadingCommand, toggleCodeCommand])
 			.use([blockSpoilerNode, blockSpoilerTitleNode, blockSpoilerInputRule, spanNode])
 			.use(remarkSpacedDirective)
 			.create();
 		MakeEditor.then((editor) => {
 			editorRef = editor;
 			const nodes = editor.ctx.get(nodesCtx);
+			editor.ctx.update(schemaCtx, (schema) => {
+				schema.marks.inlineCode.spec.inclusive = true;
+				return schema;
+			});
 			editor.ctx.update(editorViewCtx, (v) => {
 				v.editable = false;
 				return v;
@@ -123,14 +109,11 @@ homo
 				const editorView = ctx.get(editorViewCtx);
 				const serializer = ctx.get(serializerCtx);
 				const md = serializer(editorView.state.doc);
-				console.log(md);
+				// console.log(md);
 			});
 		});
 	};
 
-	const onClickDoc = (e: MouseEvent) => {
-		console.log(e.target);
-	};
 	const onKeyDownDoc = (e: KeyboardEvent) => {};
 	const onMove = () => {
 		if (!editorRef) return;
@@ -143,7 +126,6 @@ homo
 	<div
 		use:editor
 		class="flex-grow w-full overflow-auto pb-64 max-w-prose"
-		on:click={onClickDoc}
 		on:keydown={onKeyDownDoc}
 	/>
 	<div class="absolute bottom-8 flex items-center justify-center w-full">

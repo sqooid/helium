@@ -71,8 +71,6 @@ const parseSpacedDirective = (parent: Parent, indexInParent: number, node: Parag
 			);
 			if (endLine < 0) continue;
 
-			console.log('cj', contentStartIndex, j, endLine);
-
 			const beforeEnd = { type: 'paragraph', children: child.children.slice(0, endLine - 1) };
 			const afterEnd = { type: 'paragraph', children: child.children.slice(endLine + 2) };
 			const innerContent: any[] = parent.children.splice(contentStartIndex, j - contentStartIndex);
@@ -82,8 +80,6 @@ const parseSpacedDirective = (parent: Parent, indexInParent: number, node: Parag
 				hasPreceding = true;
 				innerContent.push(beforeEnd);
 			}
-			console.log('afterend', JSON.parse(JSON.stringify(afterEnd)));
-			console.log('csi', JSON.parse(JSON.stringify(parent.children[contentStartIndex])));
 
 			parent.children.splice(contentStartIndex, 1, afterEnd as any);
 			containerNode.children.push(...innerContent);
@@ -93,8 +89,6 @@ const parseSpacedDirective = (parent: Parent, indexInParent: number, node: Parag
 };
 
 const transformContent = (parent: Parent) => {
-	console.log(JSON.parse(JSON.stringify(parent)));
-
 	for (let i = 0; i < parent.children.length; ++i) {
 		const child = parent.children[i];
 		// Recurse
@@ -111,7 +105,6 @@ const transformContent = (parent: Parent) => {
 };
 
 export const spacedDirective: RemarkPlugin = () => (tree) => {
-	// console.log(tree, file);
 	transformContent(tree as Root);
 	return;
 };
@@ -122,8 +115,6 @@ export const spacedDirective: RemarkPlugin = () => (tree) => {
 
 export const spacedDirectiveHandlers: { [k: string]: Handle } = {
 	spacedDirective: (node, _, state, info) => {
-		// console.log(node);
-
 		const tracker = state.createTracker(info);
 		let value = tracker.move(`:::${node.value} `);
 		value += tracker.move(state.containerFlow(node, tracker.current()));
@@ -131,8 +122,6 @@ export const spacedDirectiveHandlers: { [k: string]: Handle } = {
 		return value;
 	},
 	spacedDirectiveLabel: (node, _, state, info) => {
-		// console.log(node);
-
 		const tracker = state.createTracker(info);
 		const value = tracker.move(state.containerFlow(node, tracker.current()));
 		return value;

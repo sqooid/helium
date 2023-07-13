@@ -9,7 +9,9 @@
 	};
 </script>
 
-<div class="w-full h-12 dark:bg-dark8 absolute bottom-0 flex justify-around shadow-md">
+<div
+	class="w-full h-12 dark:bg-dark8 absolute bottom-0 flex justify-around shadow-md border-t dark:border-darkElev8"
+>
 	<BottomBarButton label="Posts" icon={WindowMaximizeIcon} href="/feed" />
 	<BottomBarButton label="Account" icon={UserIcon} href="/account" on:rightClick={onHoldAccount} />
 	<BottomBarButton label="Settings" icon={SettingsIcon} href="/settings" />
