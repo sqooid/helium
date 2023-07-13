@@ -45,6 +45,7 @@ export const toggleCodeCommand = $command('ToggleCode', (ctx) => () => (state, d
 		const marks = selection.$head.marks();
 		if (marks.some((x) => x.type === inlineCodeSchema.type(ctx))) {
 			dispatch?.(tr.ensureMarks([]));
+			return true;
 		}
 		console.log(marks);
 
