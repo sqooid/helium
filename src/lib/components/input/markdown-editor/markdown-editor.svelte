@@ -42,8 +42,10 @@
 	import {
 		createSpoilerCommand,
 		demoteHeadingCommand,
+		toggleMarkFixed,
+		toggleCodeCommand,
 		toggleBoldCommand,
-		toggleCodeCommand
+		toggleItalicCommand
 	} from './commands';
 
 	export let value = `
@@ -93,7 +95,13 @@ const gay = "homo"
 			.config(synaxHighlight)
 			.use(prism)
 			.use(trailing)
-			.use([demoteHeadingCommand, toggleCodeCommand, createSpoilerCommand, toggleBoldCommand])
+			.use([
+				demoteHeadingCommand,
+				toggleCodeCommand,
+				createSpoilerCommand,
+				toggleBoldCommand,
+				toggleItalicCommand
+			])
 			.use([blockSpoilerNode, blockSpoilerTitleNode, blockSpoilerInputRule, spanNode])
 			.use(remarkSpacedDirective)
 			.config(spacedDirectiveSerializer)

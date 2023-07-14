@@ -13,6 +13,7 @@
 	import {
 		createCodeBlockCommand,
 		insertImageCommand,
+		strongSchema,
 		toggleEmphasisCommand,
 		toggleStrongCommand,
 		wrapInBlockquoteCommand
@@ -23,8 +24,10 @@
 	import {
 		createSpoilerCommand,
 		demoteHeadingCommand,
+		toggleMarkFixed,
+		toggleCodeCommand,
 		toggleBoldCommand,
-		toggleCodeCommand
+		toggleItalicCommand
 	} from './commands';
 	import { eventListen } from './event-plugin';
 	import MarkdownEditorToolbarButton from './markdown-editor-toolbar-button.svelte';
@@ -40,7 +43,7 @@
 	};
 
 	const toggleBold = () => editor?.action(callCommand(toggleBoldCommand.key));
-	const toggleItalic = () => editor?.action(callCommand(toggleEmphasisCommand.key));
+	const toggleItalic = () => editor?.action(callCommand(toggleItalicCommand.key));
 	const toggleInlineCode = () => editor?.action(callCommand(toggleCodeCommand.key));
 	const createCodeBlock = () => editor?.action(callCommand(createCodeBlockCommand.key));
 	const uploadImages = () => {

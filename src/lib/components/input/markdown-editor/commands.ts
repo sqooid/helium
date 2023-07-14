@@ -1,14 +1,14 @@
 import {
+	emphasisSchema,
 	headingSchema,
 	inlineCodeSchema,
 	paragraphSchema,
 	strongSchema
 } from '@milkdown/preset-commonmark';
 import { setBlockType } from '@milkdown/prose/commands';
-import { $command } from '@milkdown/utils';
+import { $command, type $MarkSchema } from '@milkdown/utils';
 import type { MarkType } from 'prosemirror-model';
 import { blockSpoilerNode, blockSpoilerTitleNode, spanNode } from './spoiler-plugin';
-import { StringSchema } from 'yup';
 
 export const createSpoilerCommand = $command(
 	'CreateSpoiler',
@@ -31,29 +31,50 @@ export const createSpoilerCommand = $command(
 	}
 );
 
-export const toggleBoldCommand = $command('ToggleBold', (ctx) => () => (state, dispatch, view) => {
-	const { tr, selection } = state;
-	if (selection.empty) {
-		console.log(selection);
-		const marks = selection.$head.marks();
-		if (marks.some((x) => x.type.name === 'strong')) {
-			dispatch?.(tr.ensureMarks(marks.filter((x) => x.type.name !== 'strong')));
+export const toggleMarkFixed = <T extends string>(key: string, mark: $MarkSchema<T>) =>
+	$command(key, (ctx) => () => (state, dispatch, view) => {
+		const { tr, selection } = state;
+		if (selection.empty) {
+			const marks = selection.$head.marks();
+			if (marks.some((x) => x.type === mark.type(ctx))) {
+				const content = selection.$head.node().textContent;
+				const start = selection.$head.parentOffset;
+				let spaceCount = 0;
+				for (; spaceCount < start; ++spaceCount) {
+					if (content[start - spaceCount - 1] !== ' ') {
+						break;
+					}
+				}
+				const node = selection.$head.nodeBefore;
+				const remainingMarks = marks.filter((x) => x.type !== mark.type(ctx));
+				if (spaceCount > 0 && node?.text) {
+					const offset = node.text.length - spaceCount + 1;
+					console.log(node, offset, selection.from, selection.to);
+					const { from } = selection;
+
+					dispatch?.(tr.removeMark(from - spaceCount, from, null).ensureMarks([]));
+					return true;
+				}
+
+				console.log(selection, content, start, spaceCount);
+
+				dispatch?.(tr.ensureMarks(remainingMarks));
+				return true;
+			}
+
+			dispatch?.(tr.addStoredMark(mark.type(ctx).create()));
 			return true;
 		}
+		const { from, to } = selection;
 
-		dispatch?.(tr.addStoredMark(strongSchema.type(ctx).create()));
+		const has = state.doc.rangeHasMark(from, to, mark.type(ctx));
+		if (has) {
+			dispatch?.(tr.removeMark(from, to, mark.type(ctx)));
+			return true;
+		}
+		dispatch?.(tr.addMark(from, to, mark.type(ctx).create()));
 		return true;
-	}
-	const { from, to } = selection;
-
-	const has = state.doc.rangeHasMark(from, to, strongSchema.type(ctx));
-	if (has) {
-		dispatch?.(tr.removeMark(from, to, strongSchema.type(ctx)));
-		return true;
-	}
-	dispatch?.(tr.addMark(from, to, strongSchema.type(ctx).create()));
-	return true;
-});
+	});
 
 export const demoteHeadingCommand = $command(
 	'DemoteHeading',
@@ -124,3 +145,6 @@ export const toggleCodeCommand = $command('ToggleCode', (ctx) => () => (state, d
 	dispatch?.(tr.addMark(from, to, inlineCodeSchema.type(ctx).create()));
 	return true;
 });
+
+export const toggleBoldCommand = toggleMarkFixed('ToggleBold', strongSchema);
+export const toggleItalicCommand = toggleMarkFixed('ToggleItalic', emphasisSchema);
