@@ -6,8 +6,8 @@
 <button
 	on:mousedown|preventDefault
 	class={`h-12 aspect-square py-3 px-2 ${`${
-		active ? 'dark:bg-white shadow-md' : 'bg-transparent'
-	} dark:bg-opacity-10 `} flex justify-center items-center`}
+		active ? 'dark:bg-darkElev4 shadow-md' : ''
+	}`} flex justify-center items-center transition-colors duration-100`}
 >
 	<svelte:component this={icon} class={`dark:fill-onDark fill-onLight h-5`} />
 </button>

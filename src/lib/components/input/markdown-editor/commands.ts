@@ -1,6 +1,6 @@
 import { headingSchema, inlineCodeSchema, paragraphSchema } from '@milkdown/preset-commonmark';
+import { setBlockType } from '@milkdown/prose/commands';
 import { $command } from '@milkdown/utils';
-import { setBlockType, toggleMark } from '@milkdown/prose/commands';
 import type { MarkType } from 'prosemirror-model';
 
 export const demoteHeadingCommand = $command(
@@ -37,9 +37,6 @@ export const demoteHeadingCommand = $command(
 
 export const toggleCodeCommand = $command('ToggleCode', (ctx) => () => (state, dispatch) => {
 	const { selection, tr } = state;
-	const { $from } = state.selection;
-	const node = $from.node();
-	console.log(selection, node);
 
 	if (selection.empty) {
 		const marks = selection.$head.marks();
@@ -48,7 +45,7 @@ export const toggleCodeCommand = $command('ToggleCode', (ctx) => () => (state, d
 			return true;
 		}
 		console.log(marks);
-
+		dispatch?.(tr.ensureMarks([]));
 		dispatch?.(tr.addStoredMark(inlineCodeSchema.type(ctx).create()));
 		return true;
 	}

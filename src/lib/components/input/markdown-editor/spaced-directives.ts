@@ -1,3 +1,4 @@
+import { remarkStringifyOptionsCtx, type Config } from '@milkdown/core';
 import type { RemarkPlugin } from '@milkdown/transformer';
 import type { Paragraph, Parent, Root } from 'mdast';
 import type { Handle } from 'mdast-util-to-markdown';
@@ -112,6 +113,13 @@ export const spacedDirective: RemarkPlugin = () => (tree) => {
 /**
  * Serializers
  */
+
+export const spacedDirectiveSerializer: Config = (ctx) => {
+	ctx.update(remarkStringifyOptionsCtx, (o) => {
+		Object.assign(o.handlers as any, spacedDirectiveHandlers);
+		return o;
+	});
+};
 
 export const spacedDirectiveHandlers: { [k: string]: Handle } = {
 	spacedDirective: (node, _, state, info) => {

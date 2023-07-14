@@ -9,7 +9,8 @@
 		editorViewCtx,
 		serializerCtx,
 		remarkStringifyOptionsCtx,
-		schemaCtx
+		schemaCtx,
+		editorViewOptionsCtx
 	} from '@milkdown/core';
 	import { nord } from '@milkdown/theme-nord';
 	import { trailing } from '@milkdown/plugin-trailing';
@@ -31,7 +32,7 @@
 		remarkSpacedDirective,
 		spanNode
 	} from './spoiler-plugin';
-	import { spacedDirectiveHandlers } from './spaced-directives';
+	import { spacedDirectiveHandlers, spacedDirectiveSerializer } from './spaced-directives';
 	import { editorStyle } from './style-plugin';
 	import { eventListen } from './event-plugin';
 	import { synaxHighlight } from './syntax-plugin';
@@ -89,21 +90,15 @@ const gay = "homo"
 			.use([demoteHeadingCommand, toggleCodeCommand])
 			.use([blockSpoilerNode, blockSpoilerTitleNode, blockSpoilerInputRule, spanNode])
 			.use(remarkSpacedDirective)
+			.config(spacedDirectiveSerializer)
 			.create();
 		MakeEditor.then((editor) => {
 			editorRef = editor;
-			const nodes = editor.ctx.get(nodesCtx);
-			editor.ctx.update(schemaCtx, (schema) => {
-				schema.marks.inlineCode.spec.inclusive = true;
-				return schema;
-			});
-			editor.ctx.update(editorViewCtx, (v) => {
-				v.editable = false;
-				return v;
-			});
-			editor.ctx.update(remarkStringifyOptionsCtx, (o) => {
-				Object.assign(o.handlers as any, spacedDirectiveHandlers);
-				return o;
+			editor.action((ctx) => {
+				ctx.update(schemaCtx, (schema) => {
+					schema.marks.inlineCode.spec.inclusive = true;
+					return schema;
+				});
 			});
 			editor.action((ctx) => {
 				const editorView = ctx.get(editorViewCtx);
@@ -114,11 +109,14 @@ const gay = "homo"
 		});
 	};
 
-	const onKeyDownDoc = (e: KeyboardEvent) => {};
+	const onKeyDownDoc = (e: KeyboardEvent) => {
+		toolbarRef.keypressNotify(e);
+	};
 	const onMove = () => {
 		if (!editorRef) return;
 		editorRef.onStatusChange(console.log);
 	};
+	let toolbarRef: MarkdownEditorToolbar;
 </script>
 
 <div class="w-full h-full flex flex-col relative items-center">
@@ -128,8 +126,8 @@ const gay = "homo"
 		class="flex-grow w-full overflow-auto pb-64 max-w-prose"
 		on:keydown={onKeyDownDoc}
 	/>
-	<div class="absolute bottom-8 flex items-center justify-center w-full">
-		<MarkdownEditorToolbar editor={editorRef} />
+	<div class="absolute bottom-8 flex items-center justify-center w-fit">
+		<MarkdownEditorToolbar bind:this={toolbarRef} editor={editorRef} />
 	</div>
 </div>
 
