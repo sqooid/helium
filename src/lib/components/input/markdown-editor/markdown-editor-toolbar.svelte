@@ -1,36 +1,37 @@
 <script lang="ts">
+	import { uploadImage } from '$lib/client/content';
+	import BoldIcon from '$lib/components/icons/bold-icon.svelte';
+	import CodeIcon from '$lib/components/icons/code-icon.svelte';
+	import EyeSlashIcon from '$lib/components/icons/eye-slash-icon.svelte';
+	import HeadingIcon from '$lib/components/icons/heading-icon.svelte';
+	import ImageIcon from '$lib/components/icons/image-icon.svelte';
+	import ItalicIcon from '$lib/components/icons/italic-icon.svelte';
+	import QuoteRightIcon from '$lib/components/icons/quote-right-icon.svelte';
+	import TerminalIcon from '$lib/components/icons/terminal-icon.svelte';
+	import { getFileInput } from '$lib/helpers/dom';
 	import { editorStateCtx, type Editor } from '@milkdown/core';
 	import {
 		createCodeBlockCommand,
 		insertImageCommand,
 		toggleEmphasisCommand,
-		toggleInlineCodeCommand,
 		toggleStrongCommand,
-		downgradeHeadingCommand,
 		wrapInBlockquoteCommand
 	} from '@milkdown/preset-commonmark';
 	import { callCommand } from '@milkdown/utils';
-	import MarkdownEditorToolbarButton from './markdown-editor-toolbar-button.svelte';
-	import BoldIcon from '$lib/components/icons/bold-icon.svelte';
-	import ItalicIcon from '$lib/components/icons/italic-icon.svelte';
-	import CodeIcon from '$lib/components/icons/code-icon.svelte';
-	import TerminalIcon from '$lib/components/icons/terminal-icon.svelte';
-	import ImageIcon from '$lib/components/icons/image-icon.svelte';
-	import { getFileInput } from '$lib/helpers/dom';
-	import { uploadImage } from '$lib/client/content';
-	import { eventListen } from './event-plugin';
-	import type { Node } from 'prosemirror-model';
-	import HeadingIcon from '$lib/components/icons/heading-icon.svelte';
-	import QuoteRightIcon from '$lib/components/icons/quote-right-icon.svelte';
-	import { demoteHeadingCommand, toggleCodeCommand } from './commands';
-	import EyeSlashIcon from '$lib/components/icons/eye-slash-icon.svelte';
 	import { debounce } from 'lodash-es';
+	import type { Node } from 'prosemirror-model';
+	import { demoteHeadingCommand, toggleCodeCommand } from './commands';
+	import { eventListen } from './event-plugin';
+	import MarkdownEditorToolbarButton from './markdown-editor-toolbar-button.svelte';
 
 	export let editor: Editor | null;
 	export const keypressNotify = (e: KeyboardEvent) => {
-		if (e.key.startsWith('Arrow')) {
-			updateModifiers();
-		}
+		updateModifiers();
+	};
+
+	const buttonWrapper = (fn: (e: MouseEvent) => void) => (e: MouseEvent) => {
+		fn(e);
+		updateModifiers();
 	};
 
 	const toggleBold = () => editor?.action(callCommand(toggleStrongCommand.key));
@@ -79,7 +80,6 @@
 				(activeModifiers as any)[node.type.name] = true;
 				++depth;
 				node = position.node(depth);
-				console.log(node);
 			}
 
 			// Update marks
@@ -102,37 +102,37 @@
 	<MarkdownEditorToolbarButton
 		icon={BoldIcon}
 		active={activeModifiers.strong}
-		on:mousedown={toggleBold}
+		on:mousedown={buttonWrapper(toggleBold)}
 	/>
 	<MarkdownEditorToolbarButton
 		icon={ItalicIcon}
 		active={activeModifiers.emphasis}
-		on:mousedown={toggleItalic}
+		on:mousedown={buttonWrapper(toggleItalic)}
 	/>
 	<MarkdownEditorToolbarButton
 		icon={HeadingIcon}
 		active={activeModifiers.heading}
-		on:mousedown={demoteHeading}
+		on:mousedown={buttonWrapper(demoteHeading)}
 	/>
 	<MarkdownEditorToolbarButton
 		icon={QuoteRightIcon}
 		active={activeModifiers.blockquote}
-		on:mousedown={toggleQuote}
+		on:mousedown={buttonWrapper(toggleQuote)}
 	/>
 	<MarkdownEditorToolbarButton
 		icon={TerminalIcon}
 		active={activeModifiers.inlineCode}
-		on:mousedown={toggleInlineCode}
+		on:mousedown={buttonWrapper(toggleInlineCode)}
 	/>
 	<MarkdownEditorToolbarButton
 		icon={CodeIcon}
 		active={activeModifiers.code_block}
-		on:mousedown={createCodeBlock}
+		on:mousedown={buttonWrapper(createCodeBlock)}
 	/>
 	<MarkdownEditorToolbarButton
 		icon={EyeSlashIcon}
 		active={activeModifiers.spoiler}
-		on:mousedown={uploadImages}
+		on:mousedown={buttonWrapper(uploadImages)}
 	/>
 	<MarkdownEditorToolbarButton icon={ImageIcon} on:mousedown={uploadImages} />
 </div>
