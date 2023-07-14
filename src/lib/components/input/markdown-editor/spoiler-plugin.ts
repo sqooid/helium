@@ -20,9 +20,11 @@ export const blockSpoilerNode = $node('spoiler', () => ({
 		{
 			...node.attrs,
 			open: true,
-			class: 'dark:bg-dark4 p-2 rounded-md shadow-md'
+			class: 'dark:bg-darkElev4 p-2 rounded-md shadow-md'
 		},
 		0
+		// ['div', { class: 'h-2' }],
+		// ['div', { class: 'flex flex-col gap-2' }, 0]
 	],
 	parseMarkdown: {
 		match: (node) => {
@@ -62,7 +64,7 @@ export const spanNode = $node('span', () => ({
 
 export const blockSpoilerTitleNode = $node('spoilerTitle', () => ({
 	content: 'span',
-	marks: '_',
+	marks: '',
 	isolating: false,
 	parseDOM: [{ tag: 'summary' }],
 	toDOM: (node) => ['summary', { class: '', ...node.attrs }, 0],

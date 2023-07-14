@@ -20,7 +20,7 @@
 	import { callCommand } from '@milkdown/utils';
 	import { debounce } from 'lodash-es';
 	import type { Node } from 'prosemirror-model';
-	import { demoteHeadingCommand, toggleCodeCommand } from './commands';
+	import { createSpoilerCommand, demoteHeadingCommand, toggleCodeCommand } from './commands';
 	import { eventListen } from './event-plugin';
 	import MarkdownEditorToolbarButton from './markdown-editor-toolbar-button.svelte';
 
@@ -54,6 +54,7 @@
 		editor?.action(callCommand(insertImageCommand.key, payload));
 	const demoteHeading = () => editor?.action(callCommand(demoteHeadingCommand.key));
 	const toggleQuote = () => editor?.action(callCommand(wrapInBlockquoteCommand.key));
+	const createSpoiler = () => editor?.action(callCommand(createSpoilerCommand.key));
 
 	const defaultModifiers = {
 		strong: false,
@@ -132,7 +133,7 @@
 	<MarkdownEditorToolbarButton
 		icon={EyeSlashIcon}
 		active={activeModifiers.spoiler}
-		on:mousedown={buttonWrapper(uploadImages)}
+		on:mousedown={buttonWrapper(createSpoiler)}
 	/>
 	<MarkdownEditorToolbarButton icon={ImageIcon} on:mousedown={uploadImages} />
 </div>

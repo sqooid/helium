@@ -38,7 +38,7 @@
 	import { synaxHighlight } from './syntax-plugin';
 	import { prism } from '@milkdown/plugin-prism';
 	import './syntax.css';
-	import { demoteHeadingCommand, toggleCodeCommand } from './commands';
+	import { createSpoilerCommand, demoteHeadingCommand, toggleCodeCommand } from './commands';
 
 	export let value = `
 
@@ -87,7 +87,7 @@ const gay = "homo"
 			.use(prism)
 			.use(commonmark)
 			.use(trailing)
-			.use([demoteHeadingCommand, toggleCodeCommand])
+			.use([demoteHeadingCommand, toggleCodeCommand, createSpoilerCommand])
 			.use([blockSpoilerNode, blockSpoilerTitleNode, blockSpoilerInputRule, spanNode])
 			.use(remarkSpacedDirective)
 			.config(spacedDirectiveSerializer)

@@ -1,7 +1,20 @@
 import { headingSchema, inlineCodeSchema, paragraphSchema } from '@milkdown/preset-commonmark';
-import { setBlockType } from '@milkdown/prose/commands';
+import { setBlockType, wrapIn } from '@milkdown/prose/commands';
 import { $command } from '@milkdown/utils';
 import type { MarkType } from 'prosemirror-model';
+import { blockSpoilerNode, blockSpoilerTitleNode, spanNode } from './spoiler-plugin';
+
+export const createSpoilerCommand = $command(
+	'CreateSpoiler',
+	(ctx) => () => (state, dispatch, view) => {
+		const span = spanNode.type(ctx).create(null, state.schema.text('spoiler'));
+		const title = blockSpoilerTitleNode.type(ctx).create(null, span);
+		const node = blockSpoilerNode.type(ctx).createAndFill(null, [title]);
+		if (!node) return false;
+		dispatch?.(state.tr.replaceSelectionWith(node));
+		return true;
+	}
+);
 
 export const demoteHeadingCommand = $command(
 	'DemoteHeading',
