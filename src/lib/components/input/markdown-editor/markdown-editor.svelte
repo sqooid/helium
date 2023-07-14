@@ -32,12 +32,19 @@
 		spanNode
 	} from './spoiler-plugin';
 	import { spacedDirectiveHandlers, spacedDirectiveSerializer } from './spaced-directives';
-	import { editorStyle } from './style-plugin';
+	import { editorStyle, theme } from './style-plugin';
 	import { eventListen } from './event-plugin';
 	import { synaxHighlight } from './syntax-plugin';
 	import { prism } from '@milkdown/plugin-prism';
 	import './syntax.css';
-	import { createSpoilerCommand, demoteHeadingCommand, toggleCodeCommand } from './commands';
+	// import './style.css';
+	import '@milkdown/theme-nord/style.css';
+	import {
+		createSpoilerCommand,
+		demoteHeadingCommand,
+		toggleBoldCommand,
+		toggleCodeCommand
+	} from './commands';
 
 	export let value = `
 
@@ -80,13 +87,13 @@ const gay = "homo"
 				ctx.set(rootCtx, dom);
 				ctx.set(defaultValueCtx, value);
 			})
-			.config(nord)
+			.config(theme)
 			.use(commonmark)
 			.config(editorStyle)
 			.config(synaxHighlight)
 			.use(prism)
 			.use(trailing)
-			.use([demoteHeadingCommand, toggleCodeCommand, createSpoilerCommand])
+			.use([demoteHeadingCommand, toggleCodeCommand, createSpoilerCommand, toggleBoldCommand])
 			.use([blockSpoilerNode, blockSpoilerTitleNode, blockSpoilerInputRule, spanNode])
 			.use(remarkSpacedDirective)
 			.config(spacedDirectiveSerializer)
@@ -134,5 +141,21 @@ const gay = "homo"
 <style lang="postcss">
 	:global(.editor) {
 		@apply flex flex-col gap-2;
+	}
+	:global(br[data-is-inline='true'], br[data-is-inline='true']::after) {
+		content: ' ';
+	}
+	:global(
+			:where(blockquote p:first-of-type):not(:where([class~='not-prose'] *))::before,
+			:where(blockquote p:first-of-type):not(:where([class~='not-prose'] *))::after
+		) {
+		content: '';
+	}
+
+	:global(
+			:where(code):not(:where([class~='not-prose'] *))::before,
+			:where(code):not(:where([class~='not-prose'] *))::after
+		) {
+		content: '';
 	}
 </style>

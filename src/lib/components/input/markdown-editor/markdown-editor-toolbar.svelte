@@ -20,7 +20,12 @@
 	import { callCommand } from '@milkdown/utils';
 	import { debounce } from 'lodash-es';
 	import type { Node } from 'prosemirror-model';
-	import { createSpoilerCommand, demoteHeadingCommand, toggleCodeCommand } from './commands';
+	import {
+		createSpoilerCommand,
+		demoteHeadingCommand,
+		toggleBoldCommand,
+		toggleCodeCommand
+	} from './commands';
 	import { eventListen } from './event-plugin';
 	import MarkdownEditorToolbarButton from './markdown-editor-toolbar-button.svelte';
 
@@ -34,7 +39,7 @@
 		updateModifiers();
 	};
 
-	const toggleBold = () => editor?.action(callCommand(toggleStrongCommand.key));
+	const toggleBold = () => editor?.action(callCommand(toggleBoldCommand.key));
 	const toggleItalic = () => editor?.action(callCommand(toggleEmphasisCommand.key));
 	const toggleInlineCode = () => editor?.action(callCommand(toggleCodeCommand.key));
 	const createCodeBlock = () => editor?.action(callCommand(createCodeBlockCommand.key));
@@ -84,9 +89,15 @@
 			}
 
 			// Update marks
-			marks.forEach((x) => {
-				(activeModifiers as any)[x.type.name] = true;
-			});
+			if (state.storedMarks) {
+				state.storedMarks.forEach((x) => {
+					(activeModifiers as any)[x.type.name] = true;
+				});
+			} else {
+				marks.forEach((x) => {
+					(activeModifiers as any)[x.type.name] = true;
+				});
+			}
 		});
 	}, 5);
 	const handleClickMove = (node: Node) => {

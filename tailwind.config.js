@@ -22,7 +22,7 @@ const darkTransElevations = [...Array(40).keys()].reduce((acc, x) => {
 }, {});
 
 export default {
-	content: ['./src/**/*.{html,js,ts,svelte}'],
+	content: ['./src/**/*.{html,js,ts,svelte,css}'],
 	theme: {
 		extend: {
 			colors: {
@@ -44,5 +44,5 @@ export default {
 			}
 		}
 	},
-	plugins: []
+	plugins: [require('@tailwindcss/typography')]
 };

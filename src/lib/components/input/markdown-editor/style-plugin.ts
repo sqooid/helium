@@ -1,4 +1,5 @@
-import type { Config } from '@milkdown/core';
+import { editorViewOptionsCtx, type Config } from '@milkdown/core';
+import type { Ctx } from '@milkdown/ctx';
 import {
 	blockquoteAttr,
 	codeBlockAttr,
@@ -6,6 +7,24 @@ import {
 	imageAttr,
 	inlineCodeAttr
 } from '@milkdown/preset-commonmark';
+
+export const theme = (ctx: Ctx): void => {
+	ctx.update(editorViewOptionsCtx, (prev) => {
+		const prevClass = prev.attributes;
+
+		return {
+			...prev,
+			attributes: (state) => {
+				const attrs = typeof prevClass === 'function' ? prevClass(state) : prevClass;
+
+				return {
+					...attrs,
+					class: `outline-none milkdown-theme ${attrs?.class || ''}`
+				};
+			}
+		};
+	});
+};
 
 export const editorStyle: Config = (ctx) => {
 	ctx.set(headingAttr.key, (node) => {

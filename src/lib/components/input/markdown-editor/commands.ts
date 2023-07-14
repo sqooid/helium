@@ -1,8 +1,14 @@
-import { headingSchema, inlineCodeSchema, paragraphSchema } from '@milkdown/preset-commonmark';
+import {
+	headingSchema,
+	inlineCodeSchema,
+	paragraphSchema,
+	strongSchema
+} from '@milkdown/preset-commonmark';
 import { setBlockType } from '@milkdown/prose/commands';
 import { $command } from '@milkdown/utils';
 import type { MarkType } from 'prosemirror-model';
 import { blockSpoilerNode, blockSpoilerTitleNode, spanNode } from './spoiler-plugin';
+import { StringSchema } from 'yup';
 
 export const createSpoilerCommand = $command(
 	'CreateSpoiler',
@@ -24,6 +30,30 @@ export const createSpoilerCommand = $command(
 		return true;
 	}
 );
+
+export const toggleBoldCommand = $command('ToggleBold', (ctx) => () => (state, dispatch, view) => {
+	const { tr, selection } = state;
+	if (selection.empty) {
+		console.log(selection);
+		const marks = selection.$head.marks();
+		if (marks.some((x) => x.type.name === 'strong')) {
+			dispatch?.(tr.ensureMarks(marks.filter((x) => x.type.name !== 'strong')));
+			return true;
+		}
+
+		dispatch?.(tr.addStoredMark(strongSchema.type(ctx).create()));
+		return true;
+	}
+	const { from, to } = selection;
+
+	const has = state.doc.rangeHasMark(from, to, strongSchema.type(ctx));
+	if (has) {
+		dispatch?.(tr.removeMark(from, to, strongSchema.type(ctx)));
+		return true;
+	}
+	dispatch?.(tr.addMark(from, to, strongSchema.type(ctx).create()));
+	return true;
+});
 
 export const demoteHeadingCommand = $command(
 	'DemoteHeading',
@@ -66,8 +96,7 @@ export const toggleCodeCommand = $command('ToggleCode', (ctx) => () => (state, d
 			dispatch?.(tr.ensureMarks([]));
 			return true;
 		}
-		console.log(marks);
-		dispatch?.(tr.ensureMarks([]));
+		dispatch?.(tr.setStoredMarks([]));
 		dispatch?.(tr.addStoredMark(inlineCodeSchema.type(ctx).create()));
 		return true;
 	}
