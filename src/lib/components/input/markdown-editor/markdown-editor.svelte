@@ -28,7 +28,6 @@
 		blockSpoilerInputRule,
 		blockSpoilerNode,
 		blockSpoilerTitleNode,
-		remarkDirective,
 		remarkSpacedDirective,
 		spanNode
 	} from './spoiler-plugin';
@@ -82,10 +81,10 @@ const gay = "homo"
 				ctx.set(defaultValueCtx, value);
 			})
 			.config(nord)
+			.use(commonmark)
 			.config(editorStyle)
 			.config(synaxHighlight)
 			.use(prism)
-			.use(commonmark)
 			.use(trailing)
 			.use([demoteHeadingCommand, toggleCodeCommand, createSpoilerCommand])
 			.use([blockSpoilerNode, blockSpoilerTitleNode, blockSpoilerInputRule, spanNode])
@@ -97,6 +96,7 @@ const gay = "homo"
 			editor.action((ctx) => {
 				ctx.update(schemaCtx, (schema) => {
 					schema.marks.inlineCode.spec.inclusive = true;
+					// schema.nodes.paragraph.spec.marks = '_';
 					return schema;
 				});
 			});

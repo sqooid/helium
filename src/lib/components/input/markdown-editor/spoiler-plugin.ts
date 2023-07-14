@@ -1,10 +1,8 @@
 import { InputRule } from '@milkdown/prose/inputrules';
 import { $inputRule, $node } from '@milkdown/utils';
 import { $remark } from '@milkdown/utils';
-import directive from 'remark-directive';
 import { spacedDirective } from './spaced-directives';
 
-export const remarkDirective = $remark(() => directive);
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 export const remarkSpacedDirective = $remark(() => spacedDirective);
@@ -20,7 +18,7 @@ export const blockSpoilerNode = $node('spoiler', () => ({
 		{
 			...node.attrs,
 			open: true,
-			class: 'dark:bg-darkElev4 p-2 rounded-md shadow-md'
+			class: 'border dark:border-darkElev8 p-3 rounded-md shadow-md'
 		},
 		0
 		// ['div', { class: 'h-2' }],
@@ -44,7 +42,7 @@ export const blockSpoilerNode = $node('spoiler', () => ({
 
 export const spanNode = $node('span', () => ({
 	content: 'inline+',
-	marks: '_',
+	marks: '',
 	isolating: false,
 	parseDOM: [{ tag: 'span' }],
 	toDOM: (node) => ['span', { class: '', ...node.attrs }, 0],
@@ -67,7 +65,7 @@ export const blockSpoilerTitleNode = $node('spoilerTitle', () => ({
 	marks: '',
 	isolating: false,
 	parseDOM: [{ tag: 'summary' }],
-	toDOM: (node) => ['summary', { class: '', ...node.attrs }, 0],
+	toDOM: (node) => ['summary', { class: 'mb-1', ...node.attrs }, 0],
 	parseMarkdown: {
 		match: (node) => {
 			return node.type === 'spacedDirectiveLabel';
