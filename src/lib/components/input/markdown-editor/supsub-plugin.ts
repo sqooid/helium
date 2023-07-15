@@ -1,9 +1,10 @@
 import { remarkStringifyOptionsCtx, type Config } from '@milkdown/core';
 import type { RemarkPlugin } from '@milkdown/transformer';
-import { $mark, $remark } from '@milkdown/utils';
+import { $mark, $markSchema, $remark } from '@milkdown/utils';
 import type { Node } from 'mdast';
 import type { Handle } from 'mdast-util-to-markdown';
 import { visit } from 'unist-util-visit';
+import { toggleMarkFixed } from './commands';
 
 /**
  * Remark plugin
@@ -49,6 +50,46 @@ const supersub: RemarkPlugin = () => (tree) => {
 		parent?.children.splice(i, 1, ...(children as any));
 	});
 
+	// Strikethrough
+	visit(tree, ['text'], (node, i, parent) => {
+		if (node.type !== 'text') {
+			return;
+		}
+
+		const { value } = node;
+
+		// eslint-disable-next-line no-useless-escape
+		const values = value.split(/\~\~/);
+		if (values.length === 1 || values.length % 2 === 0) {
+			return;
+		}
+
+		const children = values.reduce((acc, str, i) => {
+			if (!str) return acc;
+			const node =
+				i % 2 === 0
+					? {
+							type: 'text',
+							value: str
+					  }
+					: {
+							type: 'strikethrough',
+							data: {
+								hName: 'sub'
+							},
+							children: [
+								{
+									type: 'text',
+									value: str
+								}
+							]
+					  };
+			acc.push(node);
+			return acc;
+		}, [] as any[]);
+		parent?.children.splice(i!, 1, ...(children as any));
+	});
+
 	// Subscript
 	visit(tree, ['text'], (node, i, parent) => {
 		if (node.type !== 'text') {
@@ -63,8 +104,14 @@ const supersub: RemarkPlugin = () => (tree) => {
 			return;
 		}
 
+		const nextIgnore = false;
 		const children = values.reduce((acc, str, i) => {
-			if (!str) return acc;
+			if (!str) {
+				if (i % 2 === 1) {
+					acc.push({ type: 'text', value: '~~' });
+				}
+				return acc;
+			}
 			const node =
 				i % 2 === 0
 					? {
@@ -90,7 +137,7 @@ const supersub: RemarkPlugin = () => (tree) => {
 	});
 };
 
-export const remarkSupersub = $remark(() => supersub);
+export const remarkSuperSubStrike = $remark(() => supersub);
 
 /**
  * Mark schemas
@@ -134,6 +181,25 @@ export const subscriptMark = $mark('subscript', () => ({
 	}
 }));
 
+export const strikethroughMark = $mark('strikethrough', () => ({
+	spanning: false,
+	inclusive: true,
+	parseDOM: [{ tag: 's' }],
+	toDOM: () => ['s', 0],
+	parseMarkdown: {
+		match: (node) => node.type === 'strikethrough',
+		runner: (state, node, proseType) => {
+			state.openMark(proseType).next(node.children).closeMark(proseType);
+		}
+	},
+	toMarkdown: {
+		match: (mark) => mark.type.name === 'strikethrough',
+		runner: (state, mark, node) => {
+			state.withMark(mark, 'strikethrough');
+		}
+	}
+}));
+
 /**
  * Serializers
  */
@@ -151,7 +217,22 @@ export const supersubHandlers: { [k: string]: Handle } = {
 	},
 	subscript: (node, _, state, info) => {
 		return `~${node.children[0].value}~`;
+	},
+	strikethrough: (node, _, state, info) => {
+		return `~~${node.children[0].value}~~`;
 	}
 };
 
-export const supersubPlugin = [remarkSupersub, superscriptMark, subscriptMark];
+const superscriptCommand = toggleMarkFixed('ToggleSuperscript', superscriptMark);
+const subscriptCommand = toggleMarkFixed('ToggleSubscript', subscriptMark);
+const strikethroughCommand = toggleMarkFixed('ToggleStrikethrough', strikethroughMark);
+
+export const supersubPlugin = [
+	remarkSuperSubStrike,
+	superscriptMark,
+	subscriptMark,
+	strikethroughMark,
+	superscriptCommand,
+	subscriptCommand,
+	strikethroughCommand
+];

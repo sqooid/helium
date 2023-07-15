@@ -6,7 +6,7 @@ import {
 	strongSchema
 } from '@milkdown/preset-commonmark';
 import { setBlockType } from '@milkdown/prose/commands';
-import { $command, type $MarkSchema } from '@milkdown/utils';
+import { $command, type $Mark, type $MarkSchema } from '@milkdown/utils';
 import type { MarkType } from 'prosemirror-model';
 import { blockSpoilerNode, blockSpoilerTitleNode, spanNode } from './spoiler-plugin';
 
@@ -31,7 +31,7 @@ export const createSpoilerCommand = $command(
 	}
 );
 
-export const toggleMarkFixed = <T extends string>(key: string, mark: $MarkSchema<T>) =>
+export const toggleMarkFixed = <T extends string>(key: string, mark: $MarkSchema<T> | $Mark) =>
 	$command(key, (ctx) => () => (state, dispatch, view) => {
 		const { tr, selection } = state;
 		if (selection.empty) {

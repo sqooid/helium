@@ -96,3 +96,10 @@ export const blockSpoilerInputRule = $inputRule(
 			return tr;
 		})
 );
+
+export const spoilerPlugin = [
+	blockSpoilerNode,
+	spanNode,
+	blockSpoilerTitleNode,
+	blockSpoilerInputRule
+];

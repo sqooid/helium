@@ -1,12 +1,16 @@
 import { editorViewCtx, schemaCtx } from '@milkdown/core';
 import type { Ctx } from '@milkdown/ctx';
 import { emphasisSchema, strongSchema } from '@milkdown/preset-commonmark';
-import { superscriptMark, subscriptMark } from './supsub-plugin';
+import { superscriptMark, subscriptMark, strikethroughMark } from './supsub-plugin';
 
 export const fixSpaceBeforeMark = (ctx: Ctx) => {
-	const bannedSpaceMarks = [strongSchema, emphasisSchema, superscriptMark, subscriptMark].map((x) =>
-		x.type(ctx)
-	);
+	const bannedSpaceMarks = [
+		strongSchema,
+		emphasisSchema,
+		superscriptMark,
+		subscriptMark,
+		strikethroughMark
+	].map((x) => x.type(ctx));
 	ctx.update(editorViewCtx, (view) => {
 		const props = view.props;
 		props.handleTextInput = (view, _from, _to, text) => {

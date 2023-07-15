@@ -33,7 +33,8 @@
 		blockSpoilerNode,
 		blockSpoilerTitleNode,
 		remarkSpacedDirective,
-		spanNode
+		spanNode,
+		spoilerPlugin
 	} from './spoiler-plugin';
 	import { spacedDirectiveHandlers, spacedDirectiveSerializer } from './spaced-directives';
 	import { editorStyle, theme } from './style-plugin';
@@ -53,7 +54,7 @@
 	} from './commands';
 	import { routeWrapper } from '$lib/stores/elements';
 	import {
-		remarkSupersub,
+		remarkSuperSubStrike,
 		subscriptMark,
 		superscriptMark,
 		supersubPlugin,
@@ -117,7 +118,7 @@ after
 				toggleBoldCommand,
 				toggleItalicCommand
 			])
-			.use([blockSpoilerNode, blockSpoilerTitleNode, blockSpoilerInputRule, spanNode])
+			.use(spoilerPlugin)
 			.use(remarkSpacedDirective)
 			.config(spacedDirectiveSerializer)
 			.use(supersubPlugin)
