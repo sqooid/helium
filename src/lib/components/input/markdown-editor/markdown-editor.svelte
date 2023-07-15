@@ -47,6 +47,7 @@
 		toggleBoldCommand,
 		toggleItalicCommand
 	} from './commands';
+	import { routeWrapper } from '$lib/stores/elements';
 
 	export let value = `
 
@@ -132,18 +133,29 @@ const gay = "homo"
 		editorRef.onStatusChange(console.log);
 	};
 	let toolbarRef: MarkdownEditorToolbar;
+
+	const onFocusIn = () => {
+		if ($routeWrapper) {
+			const pos = $routeWrapper.scrollTop;
+			console.log(pos);
+			// $routeWrapper.scrollTo({ top: 0 });
+			// $routeWrapper.scrollTo({ top: pos });
+		}
+	};
 </script>
 
-<div class="w-full h-full flex flex-col relative items-center">
+<div class="w-full h-fit flex flex-col relative items-center">
+	<div class="sticky -top-[1px] w-screen z-10">
+		<MarkdownEditorToolbar bind:this={toolbarRef} editor={editorRef} />
+	</div>
 	<!-- svelte-ignore a11y-no-static-element-interactions -->
 	<div
 		use:editor
-		class="flex-grow w-full overflow-auto pb-64 max-w-prose"
+		class="flex-grow w-full pb-64 max-w-prose"
 		on:keydown={onKeyDownDoc}
+		on:focusin={onFocusIn}
+		on:click={onFocusIn}
 	/>
-	<div class="absolute bottom-8 flex items-center justify-center w-fit">
-		<MarkdownEditorToolbar bind:this={toolbarRef} editor={editorRef} />
-	</div>
 </div>
 
 <style lang="postcss">

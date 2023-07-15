@@ -10,6 +10,7 @@
 	import '../app.css';
 	import type { LayoutData } from './$types';
 	import ToastBar from '$lib/components/ToastBar.svelte';
+	import { routeWrapper } from '$lib/stores/elements';
 
 	$: webManifestLink = pwaInfo ? pwaInfo.webManifest.linkTag : '';
 
@@ -51,6 +52,9 @@
 	export let data: LayoutData;
 
 	const queryClient = new QueryClient({ defaultOptions: { queries: { enabled: browser } } });
+
+	let routeWrapperRef: HTMLDivElement;
+	$: if (routeWrapperRef) routeWrapper.set(routeWrapperRef);
 </script>
 
 <!-- svelte-ignore missing-declaration -->
@@ -61,7 +65,7 @@
 <QueryClientProvider client={queryClient}>
 	<div class="h-full w-screen fixed dark:bg-dark0">
 		{#key data.currentPath}
-			<div class="absolute w-full top-0 bottom-12">
+			<div class="absolute w-full top-0 bottom-12 overflow-y-auto" bind:this={routeWrapperRef}>
 				{#await currentAccount.init()}
 					<LoadingCircleIcon />
 				{:then}

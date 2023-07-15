@@ -5,7 +5,7 @@
 
 <button
 	on:mousedown|preventDefault
-	class={`h-12 aspect-square py-3 px-2 ${`${
+	class={`h-10 aspect-square py-3 px-2 rounded-md ${`${
 		active ? 'dark:bg-darkElev4 shadow-md' : ''
 	}`} flex justify-center items-center transition-colors duration-100`}
 >

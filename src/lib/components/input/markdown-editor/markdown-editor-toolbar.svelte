@@ -13,9 +13,7 @@
 	import {
 		createCodeBlockCommand,
 		insertImageCommand,
-		strongSchema,
-		toggleEmphasisCommand,
-		toggleStrongCommand,
+		wrapInBulletListCommand,
 		wrapInBlockquoteCommand
 	} from '@milkdown/preset-commonmark';
 	import { callCommand } from '@milkdown/utils';
@@ -111,9 +109,7 @@
 	}
 </script>
 
-<div
-	class={`${$$props.class} dark:bg-dark4 flex shadow-lg rounded-md overflow-hidden border dark:border-darkElev8`}
->
+<div class={`${$$props.class} dark:bg-dark8 flex shadow-lg p-2 justify-center`}>
 	<MarkdownEditorToolbarButton
 		icon={BoldIcon}
 		active={activeModifiers.strong}
