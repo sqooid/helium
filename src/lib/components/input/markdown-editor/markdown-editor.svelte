@@ -61,6 +61,7 @@
 	} from './supsub-plugin';
 	import { cloneDeep } from 'lodash-es';
 	import { fixInlineCodeInclusive, fixSpaceBeforeMark } from './fixes';
+	import { customKeymap, removeDefaultKeymaps } from './keymaps';
 
 	export let value = `
 
@@ -120,6 +121,8 @@ after
 			.use(remarkSpacedDirective)
 			.config(spacedDirectiveSerializer)
 			.use(supersubPlugin)
+			.use(customKeymap)
+			.config(removeDefaultKeymaps)
 			.config(supersubSerializer)
 			.create();
 		MakeEditor.then((editor) => {
