@@ -104,7 +104,6 @@ const supersub: RemarkPlugin = () => (tree) => {
 			return;
 		}
 
-		const nextIgnore = false;
 		const children = values.reduce((acc, str, i) => {
 			if (!str) {
 				if (i % 2 === 1) {

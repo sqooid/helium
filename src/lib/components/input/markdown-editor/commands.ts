@@ -18,8 +18,6 @@ export const createSpoilerCommand = $command(
 		if (!state.selection.empty) {
 			let content = state.selection.content().content;
 			content = content.addToStart(title);
-			console.log(content);
-
 			const { from, to } = state.selection;
 			dispatch?.(state.tr.replaceWith(from, to, blockSpoilerNode.type(ctx).create(null, content)));
 			return true;

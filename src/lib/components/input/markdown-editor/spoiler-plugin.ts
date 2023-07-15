@@ -87,10 +87,10 @@ export const blockSpoilerInputRule = $inputRule(
 		new InputRule(/^\s*:::\s*spoiler$/, (state, match, start, end) => {
 			const [okay, title = ''] = match;
 			const { tr } = state;
-			console.log(title, tr);
-
+			const span = spanNode.type(ctx).create(null, state.schema.text('spoiler'));
+			const titleNode = blockSpoilerTitleNode.type(ctx).create(null, span);
 			if (okay) {
-				const newNode = blockSpoilerNode.type(ctx).createAndFill();
+				const newNode = blockSpoilerNode.type(ctx).createAndFill(null, titleNode);
 				if (newNode) tr.replaceWith(start - 1, end, newNode);
 			}
 			return tr;
