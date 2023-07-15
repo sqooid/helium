@@ -2,6 +2,7 @@ import { $useKeymap } from '@milkdown/utils';
 import { toggleBoldCommand, toggleItalicCommand } from './commands';
 import { commandsCtx, type Config } from '@milkdown/core';
 import { emphasisKeymap, strongKeymap } from '@milkdown/preset-commonmark';
+import { removeSpoilerCommand } from './spoiler-plugin';
 
 export const customKeymap = $useKeymap('KeymapOverrides', {
 	toggleBold: {
@@ -16,6 +17,13 @@ export const customKeymap = $useKeymap('KeymapOverrides', {
 		command: (ctx) => {
 			const commands = ctx.get(commandsCtx);
 			return () => commands.call(toggleItalicCommand.key);
+		}
+	},
+	deleteSpoiler: {
+		shortcuts: ['Backspace'],
+		command: (ctx) => {
+			const commands = ctx.get(commandsCtx);
+			return () => commands.call(removeSpoilerCommand.key);
 		}
 	}
 });

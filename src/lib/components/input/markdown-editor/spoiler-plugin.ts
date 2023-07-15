@@ -1,5 +1,5 @@
 import { InputRule } from '@milkdown/prose/inputrules';
-import { $inputRule, $node } from '@milkdown/utils';
+import { $command, $inputRule, $node } from '@milkdown/utils';
 import { $remark } from '@milkdown/utils';
 import { spacedDirective } from './spaced-directives';
 
@@ -41,7 +41,7 @@ export const blockSpoilerNode = $node('spoiler', () => ({
 }));
 
 export const spanNode = $node('span', () => ({
-	content: 'inline+',
+	content: 'inline*',
 	marks: '',
 	isolating: false,
 	parseDOM: [{ tag: 'span' }],
@@ -63,7 +63,7 @@ export const spanNode = $node('span', () => ({
 export const blockSpoilerTitleNode = $node('spoilerTitle', () => ({
 	content: 'span',
 	marks: '',
-	isolating: false,
+	isolating: true,
 	parseDOM: [{ tag: 'summary' }],
 	toDOM: (node) => ['summary', { class: 'mb-1', ...node.attrs }, 0],
 	parseMarkdown: {
@@ -97,9 +97,30 @@ export const blockSpoilerInputRule = $inputRule(
 		})
 );
 
+export const removeSpoilerCommand = $command(
+	'RemoveSpoiler',
+	(ctx) => () => (state, dispatch, view) => {
+		const { selection, tr } = state;
+		const pos = selection.$head;
+		const node = pos.node(pos.depth - 1);
+		const before = pos.nodeBefore;
+		const offset = pos.textOffset;
+		if (node.type === blockSpoilerTitleNode.type(ctx) && offset === 0 && before === null) {
+			console.log('deleting spoiler');
+			const spoilerSize = pos.node(pos.depth - 2).nodeSize;
+			console.log(pos.pos, spoilerSize);
+			const spoilerPos = pos.pos;
+			dispatch?.(tr.deleteRange(spoilerPos, spoilerPos + spoilerSize - 2));
+			return true;
+		}
+		return false;
+	}
+);
+
 export const spoilerPlugin = [
 	blockSpoilerNode,
 	spanNode,
 	blockSpoilerTitleNode,
-	blockSpoilerInputRule
+	blockSpoilerInputRule,
+	removeSpoilerCommand
 ];
