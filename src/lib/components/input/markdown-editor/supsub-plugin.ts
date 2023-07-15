@@ -104,8 +104,6 @@ export const superscriptMark = $mark('superscript', () => ({
 	parseMarkdown: {
 		match: (node) => node.type === 'superscript',
 		runner: (state, node, proseType) => {
-			console.log(node);
-
 			state.openMark(proseType).next(node.children).closeMark(proseType);
 		}
 	},
@@ -149,8 +147,6 @@ export const supersubSerializer: Config = (ctx) => {
 
 export const supersubHandlers: { [k: string]: Handle } = {
 	superscript: (node, _, state, info) => {
-		console.log(node);
-
 		return `^${node.children[0].value}^`;
 	},
 	subscript: (node, _, state, info) => {

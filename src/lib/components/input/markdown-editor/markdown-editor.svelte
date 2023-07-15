@@ -11,7 +11,8 @@
 		remarkStringifyOptionsCtx,
 		schemaCtx,
 		editorViewOptionsCtx,
-		remarkCtx
+		remarkCtx,
+		editorStateCtx
 	} from '@milkdown/core';
 	import { nord } from '@milkdown/theme-nord';
 	import { trailing } from '@milkdown/plugin-trailing';
@@ -21,7 +22,9 @@
 		blockquoteAttr,
 		imageAttr,
 		inlineCodeAttr,
-		codeBlockAttr
+		codeBlockAttr,
+		strongSchema,
+		emphasisSchema
 	} from '@milkdown/preset-commonmark';
 	import MarkdownEditorToolbar from './markdown-editor-toolbar.svelte';
 	import Modal from '../modal/modal.svelte';
@@ -56,6 +59,7 @@
 		supersubPlugin,
 		supersubSerializer
 	} from './supsub-plugin';
+	import { cloneDeep } from 'lodash-es';
 
 	export let value = `
 
@@ -130,7 +134,32 @@ after
 				const editorView = ctx.get(editorViewCtx);
 				const serializer = ctx.get(serializerCtx);
 				const md = serializer(editorView.state.doc);
-				console.log(md);
+				// console.log(md);
+			});
+			editor.action((ctx) => {
+				const bannedSpaceMarks = [strongSchema, emphasisSchema, superscriptMark, subscriptMark].map(
+					(x) => x.type(ctx)
+				);
+				ctx.update(editorViewCtx, (view) => {
+					const props = view.props;
+					props.handleTextInput = (view, from, to, text) => {
+						if (text !== ' ') return false;
+
+						console.log(from, to, text);
+
+						const carriedMarks =
+							view.state.storedMarks?.filter((x) => bannedSpaceMarks.includes(x.type)) ?? [];
+						if (carriedMarks.length === 0) return false;
+
+						const pos = view.state.selection.head;
+						let transaction = view.state.tr.insertText(' ');
+						carriedMarks.forEach((x) => transaction.removeMark(pos, pos + 1, x).addStoredMark(x));
+						view.dispatch(transaction);
+						return true;
+					};
+					view.setProps(props);
+					return view;
+				});
 			});
 		});
 	};
