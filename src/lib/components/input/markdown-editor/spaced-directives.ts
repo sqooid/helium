@@ -116,7 +116,7 @@ export const spacedDirective: RemarkPlugin = () => (tree) => {
 
 export const spacedDirectiveSerializer: Config = (ctx) => {
 	ctx.update(remarkStringifyOptionsCtx, (o) => {
-		Object.assign(o.handlers as any, spacedDirectiveHandlers);
+		Object.assign(o.handlers as { [k: string]: Handle }, spacedDirectiveHandlers);
 		return o;
 	});
 };

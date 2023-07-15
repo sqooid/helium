@@ -69,6 +69,7 @@
 		"npm": "^9.7.2",
 		"prosemirror-model": "^1.19.2",
 		"refractor": "^4.8.1",
+		"remark-supersub": "^1.0.0",
 		"unist-util-visit": "^5.0.0",
 		"yup": "^1.2.0"
 	}

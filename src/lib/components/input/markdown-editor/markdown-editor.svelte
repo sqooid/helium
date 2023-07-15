@@ -10,7 +10,8 @@
 		serializerCtx,
 		remarkStringifyOptionsCtx,
 		schemaCtx,
-		editorViewOptionsCtx
+		editorViewOptionsCtx,
+		remarkCtx
 	} from '@milkdown/core';
 	import { nord } from '@milkdown/theme-nord';
 	import { trailing } from '@milkdown/plugin-trailing';
@@ -48,6 +49,13 @@
 		toggleItalicCommand
 	} from './commands';
 	import { routeWrapper } from '$lib/stores/elements';
+	import {
+		remarkSupersub,
+		subscriptMark,
+		superscriptMark,
+		supersubPlugin,
+		supersubSerializer
+	} from './supsub-plugin';
 
 	export let value = `
 
@@ -77,9 +85,9 @@ after
 \`code\`
 :::
 
-\`\`\`ts
-const gay = "homo"
-\`\`\`
+^u^W^u^
+
+~o~W~o~
 
 	`;
 
@@ -106,6 +114,8 @@ const gay = "homo"
 			.use([blockSpoilerNode, blockSpoilerTitleNode, blockSpoilerInputRule, spanNode])
 			.use(remarkSpacedDirective)
 			.config(spacedDirectiveSerializer)
+			.use(supersubPlugin)
+			.config(supersubSerializer)
 			.create();
 		MakeEditor.then((editor) => {
 			editorRef = editor;
@@ -120,7 +130,7 @@ const gay = "homo"
 				const editorView = ctx.get(editorViewCtx);
 				const serializer = ctx.get(serializerCtx);
 				const md = serializer(editorView.state.doc);
-				// console.log(md);
+				console.log(md);
 			});
 		});
 	};

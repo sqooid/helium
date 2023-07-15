@@ -59,6 +59,9 @@ dependencies:
   refractor:
     specifier: ^4.8.1
     version: 4.8.1
+  remark-supersub:
+    specifier: ^1.0.0
+    version: 1.0.0
   unist-util-visit:
     specifier: ^5.0.0
     version: 5.0.0
@@ -4998,6 +5001,12 @@ packages:
       '@types/mdast': 3.0.11
       mdast-util-to-markdown: 1.5.0
       unified: 10.1.2
+    dev: false
+
+  /remark-supersub@1.0.0:
+    resolution: {integrity: sha512-3SYsphMqpAWbr8AZozdcypozinl/lly3e7BEwPG3YT5J9uZQaDcELBF6/sr/OZoAlFxy2nhNFWSrZBu/ZPRT3Q==}
+    dependencies:
+      unist-util-visit: 4.1.2
     dev: false
 
   /remark@14.0.3:
