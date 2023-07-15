@@ -13,7 +13,6 @@
 	import {
 		createCodeBlockCommand,
 		insertImageCommand,
-		wrapInBulletListCommand,
 		wrapInBlockquoteCommand
 	} from '@milkdown/preset-commonmark';
 	import { callCommand } from '@milkdown/utils';
@@ -22,13 +21,13 @@
 	import {
 		createSpoilerCommand,
 		demoteHeadingCommand,
-		toggleMarkFixed,
-		toggleCodeCommand,
 		toggleBoldCommand,
+		toggleCodeCommand,
 		toggleItalicCommand
 	} from './commands';
 	import { eventListen } from './event-plugin';
 	import MarkdownEditorToolbarButton from './markdown-editor-toolbar-button.svelte';
+	import { animateLayoutChanges } from '$lib/helpers/animation';
 
 	export let editor: Editor | null;
 	export const keypressNotify = (e: KeyboardEvent) => {
@@ -109,7 +108,10 @@
 	}
 </script>
 
-<div class={`${$$props.class} dark:bg-dark8 flex shadow-lg p-2 justify-center`}>
+<div
+	class={`${$$props.class} dark:bg-dark8 flex gap-1 shadow-lg p-2 justify-center`}
+	use:animateLayoutChanges
+>
 	<MarkdownEditorToolbarButton
 		icon={BoldIcon}
 		active={activeModifiers.strong}

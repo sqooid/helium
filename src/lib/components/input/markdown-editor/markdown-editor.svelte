@@ -128,20 +128,7 @@ const gay = "homo"
 	const onKeyDownDoc = (e: KeyboardEvent) => {
 		toolbarRef.keypressNotify(e);
 	};
-	const onMove = () => {
-		if (!editorRef) return;
-		editorRef.onStatusChange(console.log);
-	};
 	let toolbarRef: MarkdownEditorToolbar;
-
-	const onFocusIn = () => {
-		if ($routeWrapper) {
-			const pos = $routeWrapper.scrollTop;
-			console.log(pos);
-			// $routeWrapper.scrollTo({ top: 0 });
-			// $routeWrapper.scrollTo({ top: pos });
-		}
-	};
 </script>
 
 <div class="w-full h-fit flex flex-col relative items-center">
@@ -149,13 +136,7 @@ const gay = "homo"
 		<MarkdownEditorToolbar bind:this={toolbarRef} editor={editorRef} />
 	</div>
 	<!-- svelte-ignore a11y-no-static-element-interactions -->
-	<div
-		use:editor
-		class="flex-grow w-full pb-64 max-w-prose"
-		on:keydown={onKeyDownDoc}
-		on:focusin={onFocusIn}
-		on:click={onFocusIn}
-	/>
+	<div use:editor class="flex-grow w-full pb-64 max-w-prose" on:keydown={onKeyDownDoc} />
 </div>
 
 <style lang="postcss">
@@ -177,5 +158,13 @@ const gay = "homo"
 			:where(code):not(:where([class~='not-prose'] *))::after
 		) {
 		content: '';
+	}
+	:global(ul li) {
+		list-style-type: disc;
+		@apply ml-8;
+	}
+	:global(ol li) {
+		list-style: decimal;
+		@apply ml-8;
 	}
 </style>
